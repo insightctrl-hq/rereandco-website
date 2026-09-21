@@ -22,7 +22,7 @@
         h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 400; }
         
         .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
-        .section-padding { padding: 100px 0; }
+        .section-padding { padding-top: 100px; padding-bottom: 100px; }
         
         /* --- PAGE ROUTING --- */
         .page { display: none; opacity: 0; transition: opacity 0.5s ease; }
@@ -82,7 +82,7 @@
         /* --- SECTION HEADERS --- */
         .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; display: block; color: #777; text-align: center;}
         .grid-header { text-align: center; margin-bottom: 60px; }
-        .grid-header h2 { font-size: 3.5rem; font-style: italic; color: var(--dark); }
+        .grid-header h2 { font-size: clamp(2rem, 7vw, 3.5rem); font-style: italic; color: var(--dark); }
 
         /* --- PRODUCT GRID --- */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 40px 30px; }
@@ -101,7 +101,7 @@
         .testimonial-wrapper { position: relative; border-radius: 16px; overflow: hidden; background-image: linear-gradient(rgba(34,34,34,0.7), rgba(34,34,34,0.7)), url('BJBT0547.JPG'); background-size: cover; background-position: center; display: flex; align-items: center; padding: 80px 60px; margin-top: 40px; }
         .testi-text { flex: 1; color: white; padding-right: 40px; }
         .testi-text h4 { font-family: var(--font-sans); font-size: 11px; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; opacity: 0.8; }
-        .testi-text h2 { font-size: 3.5rem; font-style: italic; margin-bottom: 20px; line-height: 1.1; }
+        .testi-text h2 { font-size: clamp(2rem, 7vw, 3.5rem); font-style: italic; margin-bottom: 20px; line-height: 1.1; }
         .testi-text p { font-size: 1rem; opacity: 0.9; max-width: 400px; line-height: 1.6; margin-bottom: 30px; }
         .testi-controls { display: flex; gap: 15px; font-size: 20px; cursor: pointer; user-select: none; }
         .testi-controls span { padding: 5px 10px; transition: 0.2s; }
@@ -134,7 +134,7 @@
 
         /* --- STORY PAGE (Circles) --- */
         .story-header { text-align: center; padding-top: 180px; padding-bottom: 60px; }
-        .story-header h1 { font-size: 4.5rem; font-style: italic; color: var(--dark); }
+        .story-header h1 { font-size: clamp(2.2rem, 9vw, 4.5rem); font-style: italic; color: var(--dark); }
         .story-content { max-width: 700px; margin: 0 auto; font-size: 1.1rem; line-height: 1.8; color: #555; text-align: center; padding-bottom: 80px;}
         .circle-layout { display: flex; justify-content: center; align-items: center; margin: 60px 0; }
         .circle { width: 300px; height: 300px; border-radius: 50%; object-fit: cover; border: 4px solid var(--cream); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
@@ -167,13 +167,17 @@
         .footer-bottom { display: flex; justify-content: space-between; font-size: 12px; color: #888; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; margin-top: 40px;}
 
         @media (max-width: 900px) {
-            .hero { padding: 0 40px; }
+            .container { padding: 0 24px; }
+            header { padding: 16px 20px; }
+            .logo-img { height: 36px; }
+            .logo-text { font-size: 16px; }
+            .cart-icon-btn { padding: 8px 16px; font-size: 11px; }
+            .hero { padding: 0 24px; }
             .hero-top-text { flex-direction: column; align-items: flex-start; gap: 0; }
-            .hero-top-text .line { display: none; }
-            .hero-top-text .word1, .hero-top-text .word2 { font-size: 14vw; }
             .hero-bottom { flex-direction: column; align-items: flex-start; gap: 30px; }
             .circle-layout { flex-direction: column; }
             .circle-1, .circle-3 { display: none; }
+            .circle-2 { width: min(300px, 70vw); height: min(300px, 70vw); }
             .nav-links { display: none; }
             .nav-toggle { display: flex; }
             .cart-panel { width: 100%; right: -100%; }
