@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rereandco - Café & Patisserie</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <style>
+        /* --- PREMIUM DESIGN SYSTEM --- */
+        :root {
+            --green: #3b5a4f;
+            --cream: #f9f6f0; 
+            --dark: #222222;
+            --gold: #c9a25b;
+            --border: rgba(0,0,0,0.08);
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-sans); background-color: var(--cream); color: var(--dark); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 400; }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
+        .section-padding { padding: 100px 0; }
+        
+        /* --- PAGE ROUTING --- */
+        .page { display: none; opacity: 0; transition: opacity 0.5s ease; }
+        .page.active { display: block; opacity: 1; }
+
+        /* --- NAVBAR --- */
+        header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(249, 246, 240, 0.8); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); transition: 0.3s; }
+        
+        .brand-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .logo-img { height: 45px; border-radius: 50%; } 
+        .logo-text { font-family: var(--font-serif); font-size: 20px; font-weight: 600; letter-spacing: 1px; color: var(--dark); }
+        
+        header.scrolled { padding: 12px 40px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); background: rgba(249, 246, 240, 0.95); }
+
+        .nav-links { display: flex; gap: 40px; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
+        .nav-links .nav-btn, .mobile-nav .nav-btn { background: none; border: none; font: inherit; text-transform: uppercase; letter-spacing: 1.5px; padding: 0; text-decoration: none; color: var(--dark); cursor: pointer; transition: 0.2s; position: relative;}
+        .nav-links .nav-btn::after { content: ''; position: absolute; width: 0; height: 1px; bottom: -4px; left: 0; background-color: var(--dark); transition: width 0.3s; }
+        .nav-links .nav-btn:hover::after, .nav-links .nav-btn.active::after { width: 100%; }
+        .nav-links .nav-btn.active { color: var(--green); }
+
+        .cart-icon-btn { border: 1px solid var(--dark); padding: 10px 24px; border-radius: 50px; background: transparent; color: var(--dark); font-size: 12px; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s;}
+        .cart-icon-btn:hover { background: var(--dark); color: var(--cream); }
+        .cart-count { background: var(--gold); color: var(--dark); border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 10px;}
+
+        /* --- MOBILE NAV --- */
+        .nav-toggle { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 40px; height: 40px; background: transparent; border: 1px solid var(--border); border-radius: 50%; cursor: pointer; }
+        .nav-toggle span { width: 16px; height: 1.5px; background: var(--dark); margin: 0 auto; transition: 0.3s; }
+        .nav-toggle.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+        .nav-toggle.active span:nth-child(2) { opacity: 0; }
+        .nav-toggle.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+        .mobile-nav { display: none; flex-direction: column; align-items: center; gap: 0; position: fixed; top: 85px; left: 20px; right: 20px; background: var(--cream); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.12); overflow: hidden; max-height: 0; opacity: 0; pointer-events: none; transition: max-height 0.35s ease, opacity 0.25s ease; z-index: 99; }
+        @media (max-width: 900px) { .mobile-nav { display: flex; } }
+        .mobile-nav.active { max-height: 300px; opacity: 1; pointer-events: auto; }
+        .mobile-nav .nav-btn { width: 100%; padding: 20px; text-align: center; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .mobile-nav .nav-btn:last-child { border-bottom: none; }
+        .mobile-nav .nav-btn.active { color: var(--green); font-weight: 600; }
+
+        /* --- UPGRADED HERO SECTION (Matched to Image) --- */
+        .hero {
+            position: relative; height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 80px;
+            background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('DCCT4399.JPG');
+            background-size: cover; background-position: center; margin: 20px; border-radius: 20px; overflow: hidden;
+        }
+        .hero-top-text { display: flex; gap: 25px; margin-bottom: auto; margin-top: 25vh; }
+        .hero-top-text span { font-family: var(--font-serif); font-size: 6vw; font-weight: 400; color: white; line-height: 1; }
+        
+        .hero-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; }
+        .hero-bottom p { color: white; max-width: 380px; font-size: 14px; font-weight: 300; line-height: 1.6; opacity: 0.9; text-align: left; }
+        
+        .hero-pill-btn {
+            display: inline-flex; align-items: center; background: white; color: var(--dark); text-decoration: none; border: none;
+            padding: 12px 24px 12px 30px; border-radius: 50px; font-weight: 500; font-size: 14px; cursor: pointer; transition: transform 0.3s ease;
+        }
+        .hero-pill-btn:hover { transform: translateY(-3px); }
+        .hero-pill-btn span { margin-left: 15px; background: var(--dark); color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
+
+        /* --- SECTION HEADERS --- */
+        .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; display: block; color: #777; text-align: center;}
+        .grid-header { text-align: center; margin-bottom: 60px; }
+        .grid-header h2 { font-size: 3.5rem; font-style: italic; color: var(--dark); }
+
+        /* --- PRODUCT GRID --- */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 40px 30px; }
+        .menu-item-card { background: transparent; text-align: left; transition: opacity 0.4s ease; }
+        .img-container { width: 100%; aspect-ratio: 1/1; background: #eae4d8; margin-bottom: 20px; border-radius: 12px; overflow: hidden; position: relative; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .menu-item-card:hover .img-container img { transform: scale(1.05); }
+        .menu-item-card h3 { font-family: var(--font-sans); font-size: 15px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.2px;}
+        .menu-item-card .desc { font-size: 13px; color: #777; margin-bottom: 12px; line-height: 1.5;}
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); }
+        .menu-item-card .price { font-family: var(--font-sans); font-size: 14px; color: var(--dark); font-weight: 500; }
+        .add-cart-text { font-size: 12px; font-weight: 600; text-transform: uppercase; cursor: pointer; color: var(--green); background: none; border: none; display: flex; align-items: center; gap: 5px; transition: 0.2s;}
+        .add-cart-text:hover { color: var(--gold); }
+
+        /* --- TESTIMONIAL SECTION --- */
+        .testimonial-wrapper { position: relative; border-radius: 16px; overflow: hidden; background-image: linear-gradient(rgba(34,34,34,0.7), rgba(34,34,34,0.7)), url('BJBT0547.JPG'); background-size: cover; background-position: center; display: flex; align-items: center; padding: 80px 60px; margin-top: 40px; }
+        .testi-text { flex: 1; color: white; padding-right: 40px; }
+        .testi-text h4 { font-family: var(--font-sans); font-size: 11px; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; opacity: 0.8; }
+        .testi-text h2 { font-size: 3.5rem; font-style: italic; margin-bottom: 20px; line-height: 1.1; }
+        .testi-text p { font-size: 1rem; opacity: 0.9; max-width: 400px; line-height: 1.6; margin-bottom: 30px; }
+        .testi-controls { display: flex; gap: 15px; font-size: 20px; cursor: pointer; user-select: none; }
+        .testi-controls span { padding: 5px 10px; transition: 0.2s; }
+        .testi-controls span:hover { color: var(--gold); }
+        
+        .testi-card { background: var(--cream); color: var(--dark); padding: 40px; width: 380px; border-radius: 4px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; transition: opacity 0.3s ease; }
+        .testi-card-inner { text-align: center; }
+        .testi-card-inner .from { font-size: 11px; color: #777; margin-bottom: 5px; }
+        .testi-card-inner .name { font-family: var(--font-serif); font-size: 1.5rem; font-style: italic; text-decoration: underline; text-underline-offset: 4px; margin-bottom: 20px; }
+        .testi-card-inner .quote { font-size: 14px; line-height: 1.6; margin-bottom: 30px; font-weight: 500;}
+        .testi-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #666; }
+        .stars { color: var(--dark); font-size: 10px; letter-spacing: 2px;}
+        /* Paperclip Simulation */
+        .paperclip { position: absolute; top: -20px; right: 40px; width: 15px; height: 50px; border: 2px solid #999; border-radius: 10px; background: transparent; border-bottom: none; transform: rotate(15deg); }
+        .paperclip::after { content: ''; position: absolute; top: 5px; left: 2px; width: 7px; height: 35px; border: 2px solid #999; border-radius: 10px; border-top: none; }
+
+        /* --- FAQ SECTION --- */
+        .faq-container { max-width: 800px; margin: 0 auto; padding-top: 60px; }
+        .faq-item { border-bottom: 1px solid var(--border); padding: 25px 0; }
+        .faq-question { width: 100%; background: none; border: none; text-align: left; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-serif); font-size: 1.4rem; font-style: italic; color: var(--green); cursor: pointer; }
+        .faq-icon { font-family: var(--font-sans); font-size: 20px; font-weight: 300; color: var(--dark); transition: transform 0.3s; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; color: #555; font-size: 14px; line-height: 1.6; }
+        .faq-item.active .faq-answer { max-height: 150px; padding-top: 15px; }
+        .faq-item.active .faq-icon { transform: rotate(45deg); }
+
+        /* --- CATEGORY TABS --- */
+        .menu-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; margin-top: 140px; flex-wrap: wrap;}
+        .menu-tab { padding: 8px 20px; border: 1px solid var(--border); border-radius: 50px; background: transparent; color: #555; cursor: pointer; font-size: 13px; transition: 0.3s; }
+        .menu-tab.active, .menu-tab:hover { background: var(--dark); color: white; border-color: var(--dark); }
+
+        /* --- STORY PAGE (Circles) --- */
+        .story-header { text-align: center; padding-top: 180px; padding-bottom: 60px; }
+        .story-header h1 { font-size: 4.5rem; font-style: italic; color: var(--dark); }
+        .story-content { max-width: 700px; margin: 0 auto; font-size: 1.1rem; line-height: 1.8; color: #555; text-align: center; padding-bottom: 80px;}
+        .circle-layout { display: flex; justify-content: center; align-items: center; margin: 60px 0; }
+        .circle { width: 300px; height: 300px; border-radius: 50%; object-fit: cover; border: 4px solid var(--cream); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .circle-1 { z-index: 1; margin-right: -50px; }
+        .circle-2 { z-index: 2; width: 350px; height: 350px; }
+        .circle-3 { z-index: 1; margin-left: -50px; }
+
+        /* --- SHOPPING CART SLIDE-OUT --- */
+        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 999; display: none; opacity: 0; transition: 0.3s; }
+        .cart-overlay.active { display: block; opacity: 1; }
+        .cart-panel { position: fixed; top: 0; right: -450px; width: 450px; height: 100%; background: var(--cream); z-index: 1000; transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1); box-shadow: -5px 0 30px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        .cart-panel.active { right: 0; }
+        .cart-header { padding: 40px 30px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--cream);}
+        .cart-header h2 { font-size: 2rem; font-style: italic; }
+        .close-cart { background: transparent; border: 1px solid var(--border); border-radius: 50%; width: 40px; height: 40px; color: var(--dark); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;}
+        .cart-items { flex-grow: 1; overflow-y: auto; padding: 30px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
+        .cart-item-info h4 { font-family: var(--font-sans); font-size: 14px; font-weight: 500; margin-bottom: 8px;}
+        .remove-item { background: transparent; border: none; color: #999; cursor: pointer; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;}
+        .cart-footer { padding: 30px; background: white; border-top: 1px solid var(--border); }
+        .cart-total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 500; margin-bottom: 25px; font-family: var(--font-sans); }
+        .checkout-btn { width: 100%; padding: 18px; background: var(--dark); color: white; border: none; border-radius: 50px; font-size: 14px; font-weight: 500; text-transform: uppercase; cursor: pointer; transition: 0.3s; letter-spacing: 1px;}
+        .checkout-btn:hover { background: var(--green); }
+        .checkout-btn:disabled { background: #ccc; color: #888; cursor: not-allowed; }
+        .checkout-btn:disabled:hover { background: #ccc; }
+
+        /* --- FOOTER --- */
+        footer { background-color: var(--dark); color: var(--cream); padding: 80px 40px 30px; text-align: center; border-radius: 20px 20px 0 0; margin: 0 20px; }
+        .footer-logo { font-family: var(--font-serif); font-size: 12vw; font-style: italic; line-height: 0.8; letter-spacing: -2px; margin-bottom: 40px; color: rgba(249, 246, 240, 0.9); }
+        .footer-bottom { display: flex; justify-content: space-between; font-size: 12px; color: #888; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; margin-top: 40px;}
+
+        @media (max-width: 900px) {
+            .hero { padding: 0 40px; }
+            .hero-top-text { flex-direction: column; align-items: flex-start; gap: 0; }
+            .hero-top-text .line { display: none; }
+            .hero-top-text .word1, .hero-top-text .word2 { font-size: 14vw; }
+            .hero-bottom { flex-direction: column; align-items: flex-start; gap: 30px; }
+            .circle-layout { flex-direction: column; }
+            .circle-1, .circle-3 { display: none; }
+            .nav-links { display: none; }
+            .nav-toggle { display: flex; }
+            .cart-panel { width: 100%; right: -100%; }
+            .testimonial-wrapper { flex-direction: column; padding: 40px 20px; }
+            .testi-text { padding-right: 0; margin-bottom: 40px; text-align: center; }
+            .testi-card { width: 100%; padding: 30px; }
+            .paperclip { right: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header id="site-header">
+        <div class="brand-container" onclick="showPage('home')">
+            <img src="photo_2026-09-18_02-28-42.jpg" alt="Rereandco Logo" class="logo-img">
+            <span class="logo-text">REREANDCO</span>
+        </div>
+        <nav class="nav-links" id="nav-links">
+            <button class="nav-btn" data-page="home" onclick="showPage('home')">Home</button>
+            <button class="nav-btn" data-page="menu" onclick="showPage('menu')">Menu</button>
+            <button class="nav-btn" data-page="story" onclick="showPage('story')">Our Story</button>
+        </nav>
+        <div style="display:flex; align-items:center; gap: 14px;">
+            <button class="cart-icon-btn" onclick="toggleCart()">
+                Cart <span class="cart-count" id="cart-count-badge">0</span>
+            </button>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" onclick="toggleMobileNav()">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+    <nav class="mobile-nav" id="mobile-nav">
+        <button class="nav-btn" data-page="home" onclick="showPage('home'); toggleMobileNav();">Home</button>
+        <button class="nav-btn" data-page="menu" onclick="showPage('menu'); toggleMobileNav();">Menu</button>
+        <button class="nav-btn" data-page="story" onclick="showPage('story'); toggleMobileNav();">Our Story</button>
+    </nav>
+
+    <!-- ================= HOME PAGE ================= -->
+    <div id="page-home" class="page active">
+        <section class="hero">
+            <div class="hero-top-text">
+                <span>Baked</span>
+               <span><i>with</i> Love</span>
+            </div>
+            <div class="hero-bottom">
+                <p>Freshly baked treats with a golden, flaky texture and rich buttery flavor crafted with care to make every moment feel special.</p>
+                <button class="hero-pill-btn" onclick="showPage('menu')">
+                    Explore Our Menu <span>→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Featured Grid -->
+        <section class="container section-padding" style="padding-bottom: 40px;">
+            <span class="section-label">Our Craft</span>
+            <div class="grid-header">
+                <h2>The Art of Food</h2>
+            </div>
+            <div class="product-grid">
+                
+                <!-- Item 1: Grand Breakfast -->
+                <div class="menu-item-card">
+                    <div class="img-container"><img loading="lazy" src="BRBR7868.jpeg" alt="Grand Breakfast"></div>
+                    <h3>Rereandco Grand Breakfast</h3>
+                    <p class="desc">Eggs, bacon, sausages, mushrooms, baked beans, hash browns, & pancakes.</p>
+                    <div class="card-bottom">
+                        <span class="price">₦18,000</span>
+                        <button class="add-cart-text" onclick="addToCart('Grand Breakfast', 18000, event)">Add to Cart <span>+</span></button>
+                    </div>
+                </div>
+
+                <!-- Item 2: Naija Brunch -->
+                <div class="menu-item-card">
+                    <div class="img-container"><img loading="lazy" src="EFQC7796.JPG" alt="Naija Brunch"></div>
+                    <h3>Rereandco Naija Brunch</h3>
+                    <p class="desc">Jollof Rice, Plantain, Coleslaw and Chicken.</p>
+                    <div class="card-bottom">
+                        <span class="price">₦14,000</span>
+                        <button class="add-cart-text" onclick="addToCart('Naija Brunch', 14000, event)">Add to Cart <span>+</span></button>
+                    </div>
+                </div>
+
+                <!-- Item 3: Signature Burger -->
+                <div class="menu-item-card">
+                    <div class="img-container"><img loading="lazy" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" alt="Signature Burger"></div>
+                    <h3>Rereandco Signature Burger</h3>
+                    <p class="desc">Double beef patties, double cheese, caramelised onions, & crispy bacon.</p>
+                    <div class="card-bottom">
+                        <span class="price">₦11,000</span>
+                        <button class="add-cart-text" onclick="addToCart('Signature Burger', 11000, event)">Add to Cart <span>+</span></button>
+                    </div>
+                </div>
+
+                <!-- Item 4: Breakfast Board -->
+                <div class="menu-item-card">
+                    <div class="img-container"><img loading="lazy" src="DCCT4399.JPG" alt="Breakfast Board"></div>
+                    <h3>Rereandco Breakfast Board</h3>
+                    <p class="desc">Sharing board for two. Pancakes, waffles, eggs, bacon, croissant & fruits.</p>
+                    <div class="card-bottom">
+                        <span class="price">₦22,000</span>
+                        <button class="add-cart-text" onclick="addToCart('Breakfast Board', 22000, event)">Add to Cart <span>+</span></button>
+                    </div>
+                </div>
+
+            </div>
+            <div style="text-align: center; margin-top: 60px;">
+                <a onclick="showPage('menu')" style="cursor: pointer; text-decoration: none; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--dark); padding-bottom: 4px;">See Full Menu ↗</a>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="container">
+            <div class="testimonial-wrapper">
+                <div class="testi-text">
+                    <h4>Testimonials</h4>
+                    <h2>A Shared Passion For Flavor</h2>
+                    <p>Hear the stories of those who have shared in our passion for authentic baking and unforgettable weekend brunches in Port Harcourt.</p>
+                    <div class="testi-controls">
+                        <span onclick="prevTestimonial()">←</span> &nbsp; <span onclick="nextTestimonial()">→</span>
+                    </div>
+                </div>
+                <div class="testi-card" id="testi-card">
+                    <div class="paperclip"></div>
+                    <div class="testi-card-inner">
+                        <div class="from">From :</div>
+                        <div class="name" id="t-name">Chidinma O.</div>
+                        <div class="quote" id="t-quote">"Pure perfection in every bite. You can really taste the handcrafted quality and the passion behind their baking."</div>
+                        <div class="testi-meta">
+                            <span class="stars">★★★★★ <span style="font-family: var(--font-sans);">4.9</span></span>
+                            <span>10/09/2026</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="container section-padding faq-container">
+            <span class="section-label">F A Q</span>
+            <div class="grid-header" style="margin-bottom: 40px;">
+                <h2>Curious About Our Bakes?</h2>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">Do you offer delivery in Port Harcourt? <span class="faq-icon">+</span></button>
+                <div class="faq-answer">Yes, we deliver across the city. Simply add items to your cart, click checkout to connect with us on WhatsApp, let us know your location, and our dispatch team will handle the rest.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">Are your pastries baked fresh? <span class="faq-icon">+</span></button>
+                <div class="faq-answer">Absolutely. Our kitchen operates daily to ensure every croissant, loaf, and pastry is perfectly fresh for your morning coffee.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">Do you require reservations for weekend brunch? <span class="faq-icon">+</span></button>
+                <div class="faq-answer">While walk-ins are always welcome, our weekend brunch is a highly curated experience. We highly recommend sending us a quick WhatsApp message to secure your table in advance.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">Can I pick up my order in person? <span class="faq-icon">+</span></button>
+                <div class="faq-answer">Yes! You can schedule a pickup via WhatsApp and collect your order directly from our location at 39 Woji Road GRA II.</div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ================= FULL MENU PAGE ================= -->
+    <div id="page-menu" class="page">
+        <div class="container">
+            <div class="menu-tabs">
+                <button class="menu-tab active" onclick="filterMenu('all', event)">All Items</button>
+                <button class="menu-tab" onclick="filterMenu('breakfast', event)">Breakfast & Eggs</button>
+                <button class="menu-tab" onclick="filterMenu('brunch', event)">Burgers & Wraps</button>
+                <button class="menu-tab" onclick="filterMenu('crepes', event)">Platters & Crepes</button>
+                <button class="menu-tab" onclick="filterMenu('bakery', event)">Bakery & Drinks</button>
+            </div>
+            
+            <div class="product-grid" id="full-menu-grid" style="margin-bottom: 120px;">
+                <!-- BREAKFAST -->
+                <div class="menu-item-card" data-category="breakfast">
+                    <div class="img-container"><img loading="lazy" src="BRBR7868.jpeg" alt="Grand Breakfast"></div>
+                    <h3>Rereandco Grand Breakfast</h3>
+                    <p class="desc">Eggs, bacon, sausages, mushrooms, baked beans, hash browns, & pancakes.</p>
+                    <div class="card-bottom"><span class="price">₦18,000</span><button class="add-cart-text" onclick="addToCart('Grand Breakfast', 18000, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="breakfast">
+                    <div class="img-container"><img loading="lazy" src="DCCT4399.JPG" alt="Breakfast Board"></div>
+                    <h3>Rereandco Breakfast Board</h3>
+                    <p class="desc">Sharing board for two. Pancakes, waffles, eggs, bacon, croissant & fruits.</p>
+                    <div class="card-bottom"><span class="price">₦22,000</span><button class="add-cart-text" onclick="addToCart('Breakfast Board', 22000, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="breakfast">
+                    <div class="img-container"><img loading="lazy" src="EFQC7796.JPG" alt="Naija Brunch"></div>
+                    <h3>Rereandco Naija Brunch</h3>
+                    <p class="desc">Jollof Rice, Plantain, Coleslaw and Chicken.</p>
+                    <div class="card-bottom"><span class="price">₦14,000</span><button class="add-cart-text" onclick="addToCart('Naija Brunch', 14000, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="breakfast">
+                    <div class="img-container"><img loading="lazy" src="HHCW5456.jpg" alt="Chicken Waffle"></div>
+                    <h3>Chicken & Waffle</h3>
+                    <p class="desc">Crispy fried chicken, Belgian waffle, maple syrup & spicy honey.</p>
+                    <div class="card-bottom"><span class="price">₦12,000</span><button class="add-cart-text" onclick="addToCart('Chicken & Waffle', 12000, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="breakfast">
+                    <div class="img-container"><img loading="lazy" src="RYED4380.JPG" alt="Pancakes"></div>
+                    <h3>Classic Pancake Stack</h3>
+                    <p class="desc">Fluffy pancakes, butter & maple syrup.</p>
+                    <div class="card-bottom"><span class="price">₦5,000</span><button class="add-cart-text" onclick="addToCart('Pancake Stack', 5000, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="breakfast">
+                    <div class="img-container"><img loading="lazy" src="brioche-french-toast-10.jpg" alt="French Toast"></div>
+                    <h3>French Toast Royale</h3>
+                    <p class="desc">Brioche french toast, caramelised bananas, berries, whipped cream & syrup.</p>
+                    <div class="card-bottom"><span class="price">₦8,500</span><button class="add-cart-text" onclick="addToCart('French Toast Royale', 8500, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="breakfast">
+                    <div class="img-container"><img loading="lazy" src="avocado-6b1cf76.webp" alt="Avocado Toast"></div>
+                    <h3>Avocado Toast</h3>
+                    <p class="desc">Sourdough, smashed avocado, poached egg, cherry tomatoes & chilli flakes.</p>
+                    <div class="card-bottom"><span class="price">₦8,500</span><button class="add-cart-text" onclick="addToCart('Avocado Toast', 8500, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="breakfast">
+                    <div class="img-container"><img loading="lazy" src="17205-eggs-benedict.webp" alt="Eggs Benedict"></div>
+                    <h3>Eggs Benedict</h3>
+                    <p class="desc">Toasted English muffin, poached eggs, turkey/chicken ham & hollandaise.</p>
+                    <div class="card-bottom"><span class="price">₦12,000</span><button class="add-cart-text" onclick="addToCart('Eggs Benedict', 12000, event)">Add <span>+</span></button></div>
+                </div>
+
+                <!-- BRUNCH & BURGERS -->
+                <div class="menu-item-card" data-category="brunch">
+                    <div class="img-container"><img loading="lazy" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" alt="Signature Burger"></div>
+                    <h3>Rereandco Signature Burger</h3>
+                    <p class="desc">Double beef patties, double cheese, caramelised onions, & crispy bacon.</p>
+                    <div class="card-bottom"><span class="price">₦11,000</span><button class="add-cart-text" onclick="addToCart('Signature Burger', 11000, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="brunch">
+                    <div class="img-container"><img loading="lazy" src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80" alt="Classic Burger"></div>
+                    <h3>Classic Beef Burger</h3>
+                    <p class="desc">Seasoned beef patty, cheese, lettuce, tomatoes, caramelised onions.</p>
+                    <div class="card-bottom"><span class="price">₦9,000</span><button class="add-cart-text" onclick="addToCart('Classic Beef Burger', 9000, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="brunch">
+                    <div class="img-container"><img loading="lazy" src="chicken-fajita-wraps-01.jpg" alt="Chicken Wrap"></div>
+                    <h3>Chicken Fajita Wrap</h3>
+                    <p class="desc">Spiced chicken, peppers & onions, lettuce, cheese & house sauce.</p>
+                    <div class="card-bottom"><span class="price">₦7,000</span><button class="add-cart-text" onclick="addToCart('Chicken Fajita Wrap', 7000, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="brunch">
+                    <div class="img-container"><img loading="lazy" src="HFEI0664.JPG" alt="Club Sandwich" loading="lazy"></div>
+                    <h3>Chicken Club Sandwich</h3>
+                    <p class="desc">Grilled chicken, bacon, egg, lettuce, tomatoes & cheese with chips.</p>
+                    <div class="card-bottom"><span class="price">₦7,500</span><button class="add-cart-text" onclick="addToCart('Club Sandwich', 7500, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="brunch">
+                    <div class="img-container"><img loading="lazy" src="ERJP9562.JPG" alt="Chef Salad"></div>
+                    <h3>Chef's Signature Salad</h3>
+                    <p class="desc">Chicken, prawns, eggs, avocado, vegetables & house dressing.</p>
+                    <div class="card-bottom"><span class="price">₦14,000</span><button class="add-cart-text" onclick="addToCart('Chef Signature Salad', 14000, event)">Add <span>+</span></button></div>
+                </div>
+
+                <!-- PLATTERS & CREPES -->
+                <div class="menu-item-card" data-category="crepes">
+                    <div class="img-container"><img loading="lazy" src="NZNF7652.JPG" alt="Platter"></div>
+                    <h3>The Rereandco Platter</h3>
+                    <p class="desc">Wings, spring rolls, samosas, chicken kebabs, chips, plantain & dips.</p>
+                    <div class="card-bottom"><span class="price">₦22,000</span><button class="add-cart-text" onclick="addToCart('Rereandco Platter', 22000, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="crepes">
+                    <div class="img-container"><img loading="lazy" src="Crispy-Chicken-Burger-tall-FS-4512.webp" alt="Feast Box"></div>
+                    <h3>The Brunch Box</h3>
+                    <p class="desc">Chicken burger + chips + chicken wings + coleslaw + drink.</p>
+                    <div class="card-bottom"><span class="price">₦15,000</span><button class="add-cart-text" onclick="addToCart('Brunch Box', 15000, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="crepes">
+                    <div class="img-container"><img loading="lazy" src="shrimp-crepes-2-2.jpg" alt="Crepe"></div>
+                    <h3>Shrimps & Cheese Crepe</h3>
+                    <p class="desc">Succulent shrimps in a creamy sauce folded into a delicate French crepe.</p>
+                    <div class="card-bottom"><span class="price">₦10,000</span><button class="add-cart-text" onclick="addToCart('Shrimps Crepe', 10000, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="crepes">
+                    <div class="img-container"><img loading="lazy" src="Banana-Crepes-with-Nutella-16-2.jpg" alt="Nutella Crepe"></div>
+                    <h3>Nutella & Banana Crepe</h3>
+                    <p class="desc">Sweet crepe filled with Nutella, fresh banana & whipped cream.</p>
+                    <div class="card-bottom"><span class="price">₦6,000</span><button class="add-cart-text" onclick="addToCart('Nutella Crepe', 6000, event)">Add <span>+</span></button></div>
+                </div>
+
+                <!-- BAKERY & DRINKS -->
+                <div class="menu-item-card" data-category="bakery">
+                    <div class="img-container"><img loading="lazy" src="croissant-images.jpg" alt="Croissant"></div>
+                    <h3>Butter Croissant</h3>
+                    <p class="desc">Freshly baked, golden, flaky, and rich with premium French butter.</p>
+                    <div class="card-bottom"><span class="price">₦3,000</span><button class="add-cart-text" onclick="addToCart('Butter Croissant', 3000, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="bakery">
+                    <div class="img-container"><img loading="lazy" src="IMG_1641-chocolate-croissant.jpg" alt="Pain au Chocolat"></div>
+                    <h3>Pain au Chocolat</h3>
+                    <p class="desc">Classic flaky pastry folded over rich dark chocolate batons.</p>
+                    <div class="card-bottom"><span class="price">₦3,500</span><button class="add-cart-text" onclick="addToCart('Pain au Chocolat', 3500, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="bakery">
+                    <div class="img-container"><img loading="lazy" src="iced-caramel-latte.webp" alt="Caramel Coffee"></div>
+                    <h3>Caramel Cloud Coffee</h3>
+                    <p class="desc">Signature iced coffee topped with rich, velvety caramel cream.</p>
+                    <div class="card-bottom"><span class="price">₦7,000</span><button class="add-cart-text" onclick="addToCart('Caramel Coffee', 7000, event)">Add <span>+</span></button></div>
+                </div>
+                <div class="menu-item-card" data-category="bakery">
+                    <div class="img-container"><img loading="lazy" src="best-hot-chocolate.webp" alt="Hot Chocolate"></div>
+                    <h3>Classic Hot Chocolate</h3>
+                    <p class="desc">Rich, creamy hot cocoa made with premium chocolate.</p>
+                    <div class="card-bottom"><span class="price">₦6,000</span><button class="add-cart-text" onclick="addToCart('Hot Chocolate', 6000, event)">Add <span>+</span></button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= OUR STORY PAGE ================= -->
+    <div id="page-story" class="page">
+        <div class="container">
+            <div class="story-header">
+                <span class="section-label">Our Story</span>
+                <h1>Crafted with Heart,<br>Baked to Perfection.</h1>
+            </div>
+            
+            <div class="circle-layout">
+                <img loading="lazy" src="BJBT0547.JPG" alt="Food Texture" class="circle circle-1">
+                <img loading="lazy" src="EFQC7796.JPG" alt="Kitchen Prep" class="circle circle-2">
+                <img loading="lazy" src="OEDD2663.JPG" alt="Golden Crust" class="circle circle-3">
+            </div>
+
+            <div class="story-content">
+                <p>Born in the heart of Port Harcourt, Rereandco is a space where good food and great vibes naturally connect. What started as a passion for authentic baking has grown into a premier destination for memorable mornings and grand weekend brunches.</p>
+                <p>Founded by Mrs. Seun Ekorie, Rereandco merges the precision of professional branding with the profound warmth of true hospitality. We understand that a meal is more than just sustenance; it is a visual and sensory experience.</p>
+                <p>Using only the finest natural ingredients and time-honored techniques, we handcraft every plate and pastry daily. Whether you are grabbing a quick morning coffee or settling in for a luxurious weekend brunch, our mission remains the same: to ensure every bite is a moment of pure joy.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SHOPPING CART SIDEBAR ================= -->
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+    <div class="cart-panel" id="cart-panel">
+        <div class="cart-header">
+            <h2>Your Order</h2>
+            <button class="close-cart" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cart-items-container">
+            <p style="text-align:center; color:#999; margin-top: 50px; font-size: 14px;">Your cart is beautifully empty.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="cart-total-price">₦0</span>
+            </div>
+            <button class="checkout-btn" onclick="checkoutToWhatsApp()">Checkout via WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+        <div class="footer-logo">Rereandco</div>
+        <div style="display: flex; justify-content: center; gap: 40px; margin-bottom: 30px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">
+            <span style="color: white;">39 Woji Road GRA II, PH</span>
+            <span style="color: white;">0916 672 9573</span>
+            <a href="https://www.instagram.com/cafe_rereandco/" target="_blank" style="color: white; text-decoration: underline;">Instagram: @cafe_rereandco</a>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 REREANDCO. ALL RIGHTS RESERVED.</span>
+            <span>WE DELIVER HAPPINESS.</span>
+        </div>
+    </footer>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // Page Routing Logic
+        const VALID_PAGES = ['home', 'menu', 'story'];
+
+        function showPage(pageId, updateHash = true) {
+            if (!VALID_PAGES.includes(pageId)) pageId = 'home';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.page === pageId));
+            if (updateHash) history.pushState({ page: pageId }, '', '#' + pageId);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.addEventListener('popstate', (e) => {
+            const pageId = (e.state && e.state.page) || 'home';
+            showPage(pageId, false);
+        });
+
+        // Mobile Nav Toggle
+        function toggleMobileNav() {
+            document.getElementById('nav-toggle').classList.toggle('active');
+            document.getElementById('mobile-nav').classList.toggle('active');
+        }
+
+        // Shrink header on scroll
+        window.addEventListener('scroll', () => {
+            document.getElementById('site-header').classList.toggle('scrolled', window.scrollY > 20);
+        });
+
+        // Testimonial Carousel Logic
+        const testimonials = [
+            { name: "Chidinma O.", quote: "\"Pure perfection in every bite. You can really taste the handcrafted quality and the passion behind their baking.\"" },
+            { name: "Olumide A.", quote: "\"The Seafood Fried Rice took me to another realm! The flavors are incredibly rich. Best brunch spot in PH, hands down.\"" },
+            { name: "Amina S.", quote: "\"My absolute go-to for weekend mornings. The Rereandco Platter is massive, fresh, and the aesthetic vibes are unmatched.\"" }
+        ];
+        let currentTesti = 0;
+
+        function updateTestimonial() {
+            const card = document.getElementById('testi-card');
+            card.style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('t-name').innerText = testimonials[currentTesti].name;
+                document.getElementById('t-quote').innerText = testimonials[currentTesti].quote;
+                card.style.opacity = '1';
+            }, 300);
+        }
+
+        function nextTestimonial() {
+            currentTesti = (currentTesti + 1) % testimonials.length;
+            updateTestimonial();
+        }
+
+        function prevTestimonial() {
+            currentTesti = (currentTesti - 1 + testimonials.length) % testimonials.length;
+            updateTestimonial();
+        }
+
+        // FAQ Toggle Logic
+        function toggleFAQ(button) {
+            const item = button.closest('.faq-item');
+            item.classList.toggle('active');
+            const icon = button.querySelector('.faq-icon');
+            if (item.classList.contains('active')) {
+                icon.textContent = '×';
+                icon.style.transform = 'rotate(90deg)';
+            } else {
+                icon.textContent = '+';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Menu Filtering Logic
+        function filterMenu(category, event) {
+            document.querySelectorAll('.menu-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const items = document.querySelectorAll('.menu-item-card[data-category]');
+            items.forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.style.display = 'block';
+                    setTimeout(() => item.style.opacity = '1', 50);
+                } else {
+                    item.style.opacity = '0';
+                    setTimeout(() => item.style.display = 'none', 300);
+                }
+            });
+        }
+
+        // Cart State & Logic
+        function loadCart() {
+            try {
+                const saved = localStorage.getItem('rereandco_cart');
+                return saved ? JSON.parse(saved) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveCart() {
+            try {
+                localStorage.setItem('rereandco_cart', JSON.stringify(cart));
+            } catch (e) {}
+        }
+
+        let cart = loadCart();
+
+        function toggleCart() {
+            document.getElementById('cart-panel').classList.toggle('active');
+            document.getElementById('cart-overlay').classList.toggle('active');
+        }
+
+        function addToCart(itemName, price, event) {
+            cart.push({ name: itemName, price: price });
+            saveCart();
+            updateCartUI();
+
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Added ✓';
+            setTimeout(() => btn.innerHTML = originalText, 1000);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveCart();
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const totalEl = document.getElementById('cart-total-price');
+            const badge = document.getElementById('cart-count-badge');
+            const checkoutBtn = document.querySelector('.checkout-btn');
+
+            badge.innerText = cart.length;
+            checkoutBtn.disabled = cart.length === 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#999; margin-top: 50px; font-size: 14px;">Your cart is beautifully empty.</p>';
+                totalEl.innerText = '₦0';
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                html += `
+                <div class="cart-item">
+                    <div class="cart-item-info">
+                        <h4>${item.name}</h4>
+                        <p style="color: var(--dark); font-size: 13px; margin-top: 4px;">₦${item.price.toLocaleString()}</p>
+                    </div>
+                    <button class="remove-item" onclick="removeFromCart(${index})">Remove</button>
+                </div>`;
+                total += item.price;
+            });
+
+            container.innerHTML = html;
+            totalEl.innerText = '₦' + total.toLocaleString();
+        }
+
+        function checkoutToWhatsApp() {
+            if (cart.length === 0) {
+                alert("Please add items to your cart before checking out.");
+                return;
+            }
+
+            let message = "Hello Rereandco! I would like to place an order:%0A%0A";
+            let total = 0;
+
+            cart.forEach(item => {
+                message += `- ${item.name} (₦${item.price.toLocaleString()})%0A`;
+                total += item.price;
+            });
+
+            message += `%0A*Total: ₦${total.toLocaleString()}*%0A%0APlease let me know the next steps for delivery/pickup!`;
+
+            const whatsappNumber = "2349166729573"; 
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Initial Load: restore cart UI, route to the URL's page, and set active nav state
+        updateCartUI();
+        showPage((location.hash || '#home').slice(1), false);
+    </script>
+</body>
+</html>
