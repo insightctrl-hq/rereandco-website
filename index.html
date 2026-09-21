@@ -4,15 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rereandco - Café & Patisserie</title>
+    <meta name="description" content="Rereandco — café & patisserie in Port Harcourt. Breakfast, brunch, pastries and coffee, handcrafted daily.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     <style>
         /* --- PREMIUM DESIGN SYSTEM --- */
         :root {
             --green: #3b5a4f;
-            --cream: #f9f6f0; 
+            --green-deep: #24362e;
+            --green-darker: #1b2a23;
+            --cream: #f9f6f0;
+            --cream-soft: #f2ece1;
             --dark: #222222;
             --gold: #c9a25b;
+            --gold-light: #ddc08a;
+            --muted: #7a7a72;
             --border: rgba(0,0,0,0.08);
+            --border-light: rgba(249,246,240,0.14);
             --font-serif: 'Playfair Display', serif;
             --font-sans: 'Inter', sans-serif;
         }
@@ -20,22 +27,28 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--font-sans); background-color: var(--cream); color: var(--dark); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
         h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 400; }
-        
+
         .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
         .section-padding { padding-top: 100px; padding-bottom: 100px; }
-        
+
         /* --- PAGE ROUTING --- */
         .page { display: none; opacity: 0; transition: opacity 0.5s ease; }
         .page.active { display: block; opacity: 1; }
 
+        /* --- SCROLL REVEAL --- */
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.in-view { opacity: 1; transform: none; }
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1; transform: none; transition: none; }
+        }
+
         /* --- NAVBAR --- */
         header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(249, 246, 240, 0.8); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); transition: 0.3s; }
-        
-        .brand-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .logo-img { height: 45px; border-radius: 50%; } 
-        .logo-text { font-family: var(--font-serif); font-size: 20px; font-weight: 600; letter-spacing: 1px; color: var(--dark); }
-        
         header.scrolled { padding: 12px 40px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); background: rgba(249, 246, 240, 0.95); }
+
+        .brand-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .logo-img { height: 45px; border-radius: 50%; }
+        .logo-text { font-family: var(--font-serif); font-size: 20px; font-weight: 600; letter-spacing: 1px; color: var(--dark); }
 
         .nav-links { display: flex; gap: 40px; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
         .nav-links .nav-btn, .mobile-nav .nav-btn { background: none; border: none; font: inherit; text-transform: uppercase; letter-spacing: 1.5px; padding: 0; text-decoration: none; color: var(--dark); cursor: pointer; transition: 0.2s; position: relative;}
@@ -55,47 +68,140 @@
         .nav-toggle.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
         .mobile-nav { display: none; flex-direction: column; align-items: center; gap: 0; position: fixed; top: 85px; left: 20px; right: 20px; background: var(--cream); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.12); overflow: hidden; max-height: 0; opacity: 0; pointer-events: none; transition: max-height 0.35s ease, opacity 0.25s ease; z-index: 99; }
         @media (max-width: 900px) { .mobile-nav { display: flex; } }
-        .mobile-nav.active { max-height: 300px; opacity: 1; pointer-events: auto; }
+        .mobile-nav.active { max-height: 340px; opacity: 1; pointer-events: auto; }
         .mobile-nav .nav-btn { width: 100%; padding: 20px; text-align: center; border-bottom: 1px solid var(--border); font-size: 13px; }
         .mobile-nav .nav-btn:last-child { border-bottom: none; }
         .mobile-nav .nav-btn.active { color: var(--green); font-weight: 600; }
 
-        /* --- UPGRADED HERO SECTION (Matched to Image) --- */
+        /* --- HERO --- */
         .hero {
             position: relative; height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 80px;
-            background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('DCCT4399.JPG');
+            background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.45)), url('DCCT4399.JPG');
             background-size: cover; background-position: center; margin: 20px; border-radius: 20px; overflow: hidden;
         }
         .hero-top-text { display: flex; gap: 25px; margin-bottom: auto; margin-top: 25vh; }
         .hero-top-text span { font-family: var(--font-serif); font-size: 6vw; font-weight: 400; color: white; line-height: 1; }
-        
+
         .hero-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; }
         .hero-bottom p { color: white; max-width: 380px; font-size: 14px; font-weight: 300; line-height: 1.6; opacity: 0.9; text-align: left; }
-        
+        .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
         .hero-pill-btn {
             display: inline-flex; align-items: center; background: white; color: var(--dark); text-decoration: none; border: none;
             padding: 12px 24px 12px 30px; border-radius: 50px; font-weight: 500; font-size: 14px; cursor: pointer; transition: transform 0.3s ease;
         }
         .hero-pill-btn:hover { transform: translateY(-3px); }
         .hero-pill-btn span { margin-left: 15px; background: var(--dark); color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
+        .hero-pill-btn.ghost { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.6); padding: 12px 30px; }
+        .hero-pill-btn.ghost:hover { background: rgba(255,255,255,0.12); }
 
         /* --- SECTION HEADERS --- */
-        .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; display: block; color: #777; text-align: center;}
+        .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; display: block; color: var(--muted); text-align: center;}
         .grid-header { text-align: center; margin-bottom: 60px; }
         .grid-header h2 { font-size: clamp(2rem, 7vw, 3.5rem); font-style: italic; color: var(--dark); }
+        .grid-header p { max-width: 560px; margin: 18px auto 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
 
         /* --- PRODUCT GRID --- */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 40px 30px; }
         .menu-item-card { background: transparent; text-align: left; transition: opacity 0.4s ease; }
         .img-container { width: 100%; aspect-ratio: 1/1; background: #eae4d8; margin-bottom: 20px; border-radius: 12px; overflow: hidden; position: relative; }
-        .img-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
         .menu-item-card:hover .img-container img { transform: scale(1.05); }
         .menu-item-card h3 { font-family: var(--font-sans); font-size: 15px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.2px;}
-        .menu-item-card .desc { font-size: 13px; color: #777; margin-bottom: 12px; line-height: 1.5;}
-        .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); }
-        .menu-item-card .price { font-family: var(--font-sans); font-size: 14px; color: var(--dark); font-weight: 500; }
-        .add-cart-text { font-size: 12px; font-weight: 600; text-transform: uppercase; cursor: pointer; color: var(--green); background: none; border: none; display: flex; align-items: center; gap: 5px; transition: 0.2s;}
+        .menu-item-card .desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.5;}
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); gap: 12px; }
+        .menu-item-card .price { font-family: var(--font-sans); font-size: 14px; color: var(--dark); font-weight: 500; white-space: nowrap; }
+        .add-cart-text { font-size: 12px; font-weight: 600; text-transform: uppercase; cursor: pointer; color: var(--green); background: none; border: none; display: flex; align-items: center; gap: 5px; transition: 0.2s; white-space: nowrap; letter-spacing: 0.5px; }
         .add-cart-text:hover { color: var(--gold); }
+        .item-tag { display: inline-block; font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gold); border: 1px solid var(--gold); padding: 3px 8px; border-radius: 50px; margin-bottom: 8px; }
+
+        /* --- MENU PAGE --- */
+        .menu-hero { padding-top: 150px; padding-bottom: 20px; text-align: center; }
+        .menu-hero h1 { font-size: clamp(2.4rem, 9vw, 4.5rem); font-style: italic; }
+        .menu-hero p { color: var(--muted); max-width: 520px; margin: 18px auto 0; font-size: 15px; line-height: 1.7; }
+
+        .course-tabs { display: flex; justify-content: center; gap: 0; margin: 45px auto 0; border: 1px solid var(--border); border-radius: 50px; padding: 5px; max-width: 360px; background: rgba(255,255,255,0.5); }
+        .course-tab { flex: 1; padding: 14px 10px; border: none; background: transparent; border-radius: 50px; cursor: pointer; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); transition: 0.3s; font-weight: 500; }
+        .course-tab.active { background: var(--green-deep); color: var(--cream); }
+
+        .section-nav { position: sticky; top: 78px; z-index: 50; background: rgba(249,246,240,0.94); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+        .section-nav-inner { display: flex; gap: 8px; overflow-x: auto; padding: 14px 40px; max-width: 1400px; margin: 0 auto; scrollbar-width: none; }
+        .section-nav-inner::-webkit-scrollbar { display: none; }
+        .section-link { white-space: nowrap; padding: 8px 18px; border-radius: 50px; border: 1px solid var(--border); background: transparent; font-size: 12px; color: var(--muted); cursor: pointer; transition: 0.25s; }
+        .section-link:hover, .section-link.active { background: var(--green-deep); border-color: var(--green-deep); color: var(--cream); }
+
+        .menu-section { padding-top: 70px; }
+        .menu-section-head { margin-bottom: 36px; border-bottom: 1px solid var(--border); padding-bottom: 18px; display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+        .menu-section-head h2 { font-size: clamp(1.6rem, 4.5vw, 2.4rem); font-style: italic; }
+        .menu-section-head span { font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px; color: var(--muted); }
+
+        .menu-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 4px 50px; }
+        .menu-row { display: flex; align-items: flex-start; gap: 16px; padding: 20px 0; border-bottom: 1px dashed var(--border); }
+        .menu-row-main { flex: 1; min-width: 0; }
+        .menu-row-title { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+        .menu-row h4 { font-family: var(--font-sans); font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
+        .menu-row .desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-top: 5px; }
+        .menu-row-side { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+        .menu-row .price { font-size: 14px; font-weight: 500; white-space: nowrap; font-variant-numeric: tabular-nums; }
+        .menu-row .price.ask { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; }
+        .row-add { border: 1px solid var(--green-deep); background: transparent; color: var(--green-deep); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px; line-height: 1; transition: 0.25s; flex-shrink: 0; }
+        .row-add:hover { background: var(--green-deep); color: var(--cream); }
+        .sub-group-label { grid-column: 1/-1; font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px; color: var(--gold); margin-top: 30px; margin-bottom: 4px; }
+
+        /* --- DRINKS (display only) --- */
+        .drinks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 36px 40px; }
+        .drink-group h4 { font-family: var(--font-sans); font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px; color: var(--gold); margin-bottom: 14px; }
+        .drink-group ul { list-style: none; }
+        .drink-group li { font-size: 14px; color: #55554e; padding: 7px 0; border-bottom: 1px dashed var(--border); }
+        .drinks-note { margin-top: 40px; padding: 22px 26px; background: rgba(59,90,79,0.06); border-left: 2px solid var(--green); border-radius: 4px; font-size: 13.5px; color: #55554e; line-height: 1.7; }
+
+        /* --- BUILDER PAGE --- */
+        .builder-hero { padding-top: 150px; text-align: center; }
+        .builder-hero h1 { font-size: clamp(2.4rem, 9vw, 4.5rem); font-style: italic; }
+        .builder-hero p { color: var(--muted); max-width: 560px; margin: 18px auto 0; font-size: 15px; line-height: 1.7; }
+        .builder-modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin: 50px 0 20px; }
+        .mode-card { text-align: left; border: 1px solid var(--border); background: rgba(255,255,255,0.55); border-radius: 16px; padding: 26px; cursor: pointer; transition: 0.3s; }
+        .mode-card:hover { transform: translateY(-4px); box-shadow: 0 14px 34px rgba(0,0,0,0.07); }
+        .mode-card.active { background: var(--green-deep); border-color: var(--green-deep); color: var(--cream); }
+        .mode-card.active .mode-sub { color: rgba(249,246,240,0.7); }
+        .mode-card h3 { font-size: 1.35rem; font-style: italic; margin-bottom: 8px; }
+        .mode-sub { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+        .builder-layout { display: grid; grid-template-columns: 1fr 340px; gap: 50px; align-items: start; padding-bottom: 120px; }
+        .builder-step { margin-bottom: 44px; }
+        .builder-step-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 18px; }
+        .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--green-deep); color: var(--cream); font-size: 11px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .builder-step h3 { font-size: 1.4rem; font-style: italic; }
+        .step-hint { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); }
+        .option-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 12px; }
+        .option { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 15px 18px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.5); cursor: pointer; transition: 0.22s; text-align: left; font: inherit; color: inherit; }
+        .option:hover { border-color: var(--green); }
+        .option.selected { background: var(--green-deep); border-color: var(--green-deep); color: var(--cream); }
+        .option-name { font-size: 14px; }
+        .option-price { font-size: 12px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+        .option.selected .option-price { color: var(--gold-light); }
+
+        .builder-summary { position: sticky; top: 110px; background: var(--green-deep); color: var(--cream); border-radius: 18px; padding: 30px; }
+        .builder-summary h3 { font-size: 1.5rem; font-style: italic; margin-bottom: 6px; }
+        .builder-summary .bs-sub { font-size: 12px; color: rgba(249,246,240,0.6); margin-bottom: 22px; }
+        .bs-list { list-style: none; margin-bottom: 20px; max-height: 320px; overflow-y: auto; }
+        .bs-list li { display: flex; justify-content: space-between; gap: 14px; font-size: 13px; padding: 9px 0; border-bottom: 1px solid var(--border-light); }
+        .bs-list li span:last-child { color: var(--gold-light); font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .bs-empty { font-size: 13px; color: rgba(249,246,240,0.5); padding: 20px 0; line-height: 1.7; }
+        .bs-total { display: flex; justify-content: space-between; align-items: baseline; padding-top: 18px; border-top: 1px solid var(--border-light); margin-bottom: 22px; }
+        .bs-total span:first-child { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: rgba(249,246,240,0.7); }
+        .bs-total span:last-child { font-family: var(--font-serif); font-size: 1.8rem; color: var(--gold-light); }
+        .btn-gold { width: 100%; padding: 17px; background: var(--gold); color: var(--green-darker); border: none; border-radius: 50px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; font-family: var(--font-sans); }
+        .btn-gold:hover { background: var(--gold-light); }
+        .btn-gold:disabled { background: rgba(249,246,240,0.15); color: rgba(249,246,240,0.4); cursor: not-allowed; }
+        .btn-text { width: 100%; background: none; border: none; color: rgba(249,246,240,0.6); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; padding: 14px 0 0; font-family: var(--font-sans); }
+        .btn-text:hover { color: var(--cream); }
+
+        /* --- BUILDER TEASER (home) --- */
+        .builder-teaser { background: var(--green-deep); color: var(--cream); border-radius: 20px; padding: 80px 60px; text-align: center; margin-top: 40px; }
+        .builder-teaser h2 { font-size: clamp(2rem, 6vw, 3.2rem); font-style: italic; margin-bottom: 18px; }
+        .builder-teaser p { max-width: 540px; margin: 0 auto 32px; font-size: 15px; line-height: 1.75; color: rgba(249,246,240,0.78); }
+        .builder-teaser .btn-gold { max-width: 280px; margin: 0 auto; }
 
         /* --- TESTIMONIAL SECTION --- */
         .testimonial-wrapper { position: relative; border-radius: 16px; overflow: hidden; background-image: linear-gradient(rgba(34,34,34,0.7), rgba(34,34,34,0.7)), url('BJBT0547.JPG'); background-size: cover; background-position: center; display: flex; align-items: center; padding: 80px 60px; margin-top: 40px; }
@@ -103,75 +209,129 @@
         .testi-text h4 { font-family: var(--font-sans); font-size: 11px; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; opacity: 0.8; }
         .testi-text h2 { font-size: clamp(2rem, 7vw, 3.5rem); font-style: italic; margin-bottom: 20px; line-height: 1.1; }
         .testi-text p { font-size: 1rem; opacity: 0.9; max-width: 400px; line-height: 1.6; margin-bottom: 30px; }
-        .testi-controls { display: flex; gap: 15px; font-size: 20px; cursor: pointer; user-select: none; }
-        .testi-controls span { padding: 5px 10px; transition: 0.2s; }
-        .testi-controls span:hover { color: var(--gold); }
-        
+        .testi-controls { display: flex; gap: 15px; font-size: 20px; }
+        .testi-controls button { background: none; border: 1px solid rgba(255,255,255,0.35); color: white; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; transition: 0.25s; }
+        .testi-controls button:hover { background: rgba(255,255,255,0.15); border-color: var(--gold); color: var(--gold); }
+
         .testi-card { background: var(--cream); color: var(--dark); padding: 40px; width: 380px; border-radius: 4px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; transition: opacity 0.3s ease; }
         .testi-card-inner { text-align: center; }
-        .testi-card-inner .from { font-size: 11px; color: #777; margin-bottom: 5px; }
+        .testi-card-inner .from { font-size: 11px; color: var(--muted); margin-bottom: 5px; }
         .testi-card-inner .name { font-family: var(--font-serif); font-size: 1.5rem; font-style: italic; text-decoration: underline; text-underline-offset: 4px; margin-bottom: 20px; }
         .testi-card-inner .quote { font-size: 14px; line-height: 1.6; margin-bottom: 30px; font-weight: 500;}
         .testi-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #666; }
         .stars { color: var(--dark); font-size: 10px; letter-spacing: 2px;}
-        /* Paperclip Simulation */
         .paperclip { position: absolute; top: -20px; right: 40px; width: 15px; height: 50px; border: 2px solid #999; border-radius: 10px; background: transparent; border-bottom: none; transform: rotate(15deg); }
         .paperclip::after { content: ''; position: absolute; top: 5px; left: 2px; width: 7px; height: 35px; border: 2px solid #999; border-radius: 10px; border-top: none; }
 
         /* --- FAQ SECTION --- */
         .faq-container { max-width: 800px; margin: 0 auto; padding-top: 60px; }
         .faq-item { border-bottom: 1px solid var(--border); padding: 25px 0; }
-        .faq-question { width: 100%; background: none; border: none; text-align: left; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-serif); font-size: 1.4rem; font-style: italic; color: var(--green); cursor: pointer; }
-        .faq-icon { font-family: var(--font-sans); font-size: 20px; font-weight: 300; color: var(--dark); transition: transform 0.3s; }
-        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; color: #555; font-size: 14px; line-height: 1.6; }
-        .faq-item.active .faq-answer { max-height: 150px; padding-top: 15px; }
-        .faq-item.active .faq-icon { transform: rotate(45deg); }
+        .faq-question { width: 100%; background: none; border: none; text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 20px; font-family: var(--font-serif); font-size: 1.4rem; font-style: italic; color: var(--green); cursor: pointer; }
+        .faq-icon { font-family: var(--font-sans); font-size: 20px; font-weight: 300; color: var(--dark); transition: transform 0.3s; flex-shrink: 0; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.3s ease; color: #55554e; font-size: 14px; line-height: 1.7; }
+        .faq-item.active .faq-answer { max-height: 260px; padding-top: 15px; }
 
-        /* --- CATEGORY TABS --- */
-        .menu-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; margin-top: 140px; flex-wrap: wrap;}
-        .menu-tab { padding: 8px 20px; border: 1px solid var(--border); border-radius: 50px; background: transparent; color: #555; cursor: pointer; font-size: 13px; transition: 0.3s; }
-        .menu-tab.active, .menu-tab:hover { background: var(--dark); color: white; border-color: var(--dark); }
-
-        /* --- STORY PAGE (Circles) --- */
+        /* --- STORY PAGE --- */
         .story-header { text-align: center; padding-top: 180px; padding-bottom: 60px; }
         .story-header h1 { font-size: clamp(2.2rem, 9vw, 4.5rem); font-style: italic; color: var(--dark); }
-        .story-content { max-width: 700px; margin: 0 auto; font-size: 1.1rem; line-height: 1.8; color: #555; text-align: center; padding-bottom: 80px;}
+        .story-content { max-width: 700px; margin: 0 auto; font-size: 1.1rem; line-height: 1.8; color: #55554e; text-align: center; padding-bottom: 80px;}
+        .story-content p { margin-bottom: 22px; }
         .circle-layout { display: flex; justify-content: center; align-items: center; margin: 60px 0; }
         .circle { width: 300px; height: 300px; border-radius: 50%; object-fit: cover; border: 4px solid var(--cream); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         .circle-1 { z-index: 1; margin-right: -50px; }
         .circle-2 { z-index: 2; width: 350px; height: 350px; }
         .circle-3 { z-index: 1; margin-left: -50px; }
 
-        /* --- SHOPPING CART SLIDE-OUT --- */
-        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 999; display: none; opacity: 0; transition: 0.3s; }
+        /* --- CART SLIDE-OUT (premium dark) --- */
+        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 999; display: none; opacity: 0; transition: 0.3s; }
         .cart-overlay.active { display: block; opacity: 1; }
-        .cart-panel { position: fixed; top: 0; right: -450px; width: 450px; height: 100%; background: var(--cream); z-index: 1000; transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1); box-shadow: -5px 0 30px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        .cart-panel { position: fixed; top: 0; right: -460px; width: 460px; max-width: 100%; height: 100%; background: var(--green-deep); color: var(--cream); z-index: 1000; transition: right 0.45s cubic-bezier(0.77, 0, 0.175, 1); box-shadow: -5px 0 40px rgba(0,0,0,0.25); display: flex; flex-direction: column; }
         .cart-panel.active { right: 0; }
-        .cart-header { padding: 40px 30px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--cream);}
-        .cart-header h2 { font-size: 2rem; font-style: italic; }
-        .close-cart { background: transparent; border: 1px solid var(--border); border-radius: 50%; width: 40px; height: 40px; color: var(--dark); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;}
-        .cart-items { flex-grow: 1; overflow-y: auto; padding: 30px; }
-        .cart-item { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
-        .cart-item-info h4 { font-family: var(--font-sans); font-size: 14px; font-weight: 500; margin-bottom: 8px;}
-        .remove-item { background: transparent; border: none; color: #999; cursor: pointer; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;}
-        .cart-footer { padding: 30px; background: white; border-top: 1px solid var(--border); }
-        .cart-total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 500; margin-bottom: 25px; font-family: var(--font-sans); }
-        .checkout-btn { width: 100%; padding: 18px; background: var(--dark); color: white; border: none; border-radius: 50px; font-size: 14px; font-weight: 500; text-transform: uppercase; cursor: pointer; transition: 0.3s; letter-spacing: 1px;}
-        .checkout-btn:hover { background: var(--green); }
-        .checkout-btn:disabled { background: #ccc; color: #888; cursor: not-allowed; }
-        .checkout-btn:disabled:hover { background: #ccc; }
+        .cart-header { padding: 38px 32px 22px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; }
+        .cart-header h2 { font-size: 1.7rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 400; }
+        .close-cart { background: transparent; border: none; color: var(--cream); font-size: 26px; cursor: pointer; line-height: 1; padding: 4px 8px; transition: 0.2s; }
+        .close-cart:hover { color: var(--gold); }
+        .cart-items { flex-grow: 1; overflow-y: auto; padding: 10px 32px; }
+        .cart-item { padding: 22px 0; border-bottom: 1px solid var(--border-light); }
+        .cart-item-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+        .cart-item h4 { font-family: var(--font-serif); font-size: 1.15rem; font-weight: 400; }
+        .cart-item-detail { font-size: 11.5px; color: rgba(249,246,240,0.55); line-height: 1.6; margin-top: 6px; }
+        .cart-item-math { font-size: 12.5px; color: rgba(249,246,240,0.7); margin-top: 8px; font-variant-numeric: tabular-nums; }
+        .qty-controls { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .qty-btn { width: 30px; height: 30px; border: 1px solid var(--border-light); background: transparent; color: var(--cream); cursor: pointer; font-size: 15px; line-height: 1; border-radius: 4px; transition: 0.2s; }
+        .qty-btn:hover { border-color: var(--gold); color: var(--gold); }
+        .qty-num { min-width: 26px; text-align: center; font-size: 14px; font-variant-numeric: tabular-nums; }
+        .remove-item { background: transparent; border: 1px solid var(--border-light); color: rgba(249,246,240,0.65); cursor: pointer; width: 30px; height: 30px; border-radius: 4px; transition: 0.2s; font-size: 13px; }
+        .remove-item:hover { border-color: #c96b5b; color: #e08878; }
+        .cart-empty { text-align: center; color: rgba(249,246,240,0.5); margin-top: 60px; font-size: 14px; line-height: 1.8; padding: 0 20px; }
+        .cart-footer { padding: 26px 32px 32px; border-top: 1px solid var(--border-light); }
+        .cart-line { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: rgba(249,246,240,0.65); }
+        .cart-line span:last-child { font-family: var(--font-sans); font-size: 14px; color: var(--cream); letter-spacing: 0; font-variant-numeric: tabular-nums; }
+        .cart-total { display: flex; justify-content: space-between; align-items: baseline; margin: 18px 0 24px; padding-top: 18px; border-top: 1px solid var(--border-light); }
+        .cart-total span:first-child { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: rgba(249,246,240,0.7); }
+        .cart-total span:last-child { font-family: var(--font-serif); font-size: 2rem; color: var(--gold-light); font-variant-numeric: tabular-nums; }
+        .cart-foot-links { display: flex; justify-content: space-between; margin-top: 16px; }
+        .cart-foot-links button { background: none; border: none; color: rgba(249,246,240,0.55); font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; font-family: var(--font-sans); transition: 0.2s; }
+        .cart-foot-links button:hover { color: var(--cream); }
+
+        /* --- PAYMENT MODAL --- */
+        .pay-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); z-index: 1100; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .pay-overlay.active { display: flex; }
+        .pay-modal { background: var(--green-deep); color: var(--cream); border-radius: 18px; width: 100%; max-width: 560px; max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 30px 70px rgba(0,0,0,0.4); overflow: hidden; }
+        .pay-head { padding: 32px 34px 24px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+        .pay-head h2 { font-size: 1.5rem; text-transform: uppercase; letter-spacing: 3px; font-weight: 400; line-height: 1.4; }
+        .pay-body { padding: 28px 34px; overflow-y: auto; flex: 1; }
+        .pay-intro { font-size: 13.5px; color: rgba(249,246,240,0.75); line-height: 1.75; margin-bottom: 24px; }
+        .pay-total-box { background: var(--green-darker); border: 1px solid var(--border-light); border-radius: 12px; padding: 26px; text-align: center; margin-bottom: 26px; }
+        .pay-total-box .label { font-size: 10.5px; text-transform: uppercase; letter-spacing: 2.5px; color: rgba(249,246,240,0.6); margin-bottom: 10px; }
+        .pay-total-box .amount { font-family: var(--font-serif); font-size: 2.6rem; color: var(--gold-light); font-variant-numeric: tabular-nums; }
+        .bank-card { background: var(--green-darker); border: 1px solid var(--border-light); border-radius: 12px; padding: 22px 24px; margin-bottom: 14px; }
+        .bank-card .idx { font-size: 10px; text-transform: uppercase; letter-spacing: 2.5px; color: rgba(249,246,240,0.5); margin-bottom: 10px; }
+        .bank-card .bank-name { font-family: var(--font-serif); font-size: 1.3rem; letter-spacing: 1px; margin-bottom: 14px; }
+        .bank-card .field-label { font-size: 9.5px; text-transform: uppercase; letter-spacing: 2px; color: rgba(249,246,240,0.5); margin-bottom: 4px; }
+        .bank-card .acct-name { font-size: 14px; margin-bottom: 14px; }
+        .bank-card .acct-num { font-family: var(--font-serif); font-size: 1.5rem; letter-spacing: 3px; margin-bottom: 14px; font-variant-numeric: tabular-nums; }
+        .copy-btn { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border-light); color: var(--cream); border-radius: 8px; font-size: 10.5px; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.25s; font-family: var(--font-sans); }
+        .copy-btn:hover { border-color: var(--gold); color: var(--gold); }
+        .copy-btn.copied { border-color: var(--gold); color: var(--gold); }
+        .pay-field { margin-top: 24px; }
+        .pay-field label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: rgba(249,246,240,0.6); margin-bottom: 10px; }
+        .pay-field input { width: 100%; padding: 14px 16px; background: var(--green-darker); border: 1px solid var(--border-light); border-radius: 8px; color: var(--cream); font-family: var(--font-sans); font-size: 14px; }
+        .pay-field input::placeholder { color: rgba(249,246,240,0.35); }
+        .pay-field input:focus { outline: none; border-color: var(--gold); }
+        .pay-disclaimer { margin-top: 22px; font-size: 12px; color: rgba(249,246,240,0.6); line-height: 1.75; padding: 16px 18px; border-left: 2px solid var(--gold); background: rgba(201,162,91,0.07); border-radius: 4px; }
+        .pay-foot { padding: 22px 34px 30px; border-top: 1px solid var(--border-light); }
+        .pay-success { text-align: center; padding: 20px 0 10px; }
+        .pay-success .tick { width: 64px; height: 64px; border-radius: 50%; border: 1px solid var(--gold); color: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 22px; }
+        .pay-success h3 { font-size: 1.6rem; font-style: italic; margin-bottom: 14px; }
+        .pay-success p { font-size: 13.5px; color: rgba(249,246,240,0.7); line-height: 1.8; max-width: 380px; margin: 0 auto; }
+
+        /* --- TOAST --- */
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translate(-50%, 130%); background: var(--green-deep); color: var(--cream); padding: 16px 28px; border-radius: 50px; font-size: 13px; z-index: 1200; box-shadow: 0 14px 34px rgba(0,0,0,0.25); transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2); display: flex; align-items: center; gap: 12px; max-width: calc(100% - 40px); }
+        .toast.show { transform: translate(-50%, 0); }
+        .toast .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
 
         /* --- FOOTER --- */
         footer { background-color: var(--dark); color: var(--cream); padding: 80px 40px 30px; text-align: center; border-radius: 20px 20px 0 0; margin: 0 20px; }
         .footer-logo { font-family: var(--font-serif); font-size: 12vw; font-style: italic; line-height: 0.8; letter-spacing: -2px; margin-bottom: 40px; color: rgba(249, 246, 240, 0.9); }
-        .footer-bottom { display: flex; justify-content: space-between; font-size: 12px; color: #888; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; margin-top: 40px;}
+        .footer-info { display: flex; justify-content: center; gap: 40px; margin-bottom: 30px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; flex-wrap: wrap; }
+        .footer-info a, .footer-info span { color: white; text-decoration: none; }
+        .footer-info a:hover { color: var(--gold); }
+        .footer-bottom { display: flex; justify-content: space-between; font-size: 12px; color: #888; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; margin-top: 40px; gap: 20px; flex-wrap: wrap; }
+
+        @media (max-width: 1080px) {
+            .builder-layout { grid-template-columns: 1fr; }
+            .builder-summary { position: static; }
+        }
 
         @media (max-width: 900px) {
             .container { padding: 0 24px; }
-            header { padding: 16px 20px; }
+            header { padding: 16px 20px; gap: 14px; }
             .logo-img { height: 36px; }
             .logo-text { font-size: 16px; }
             .cart-icon-btn { padding: 8px 16px; font-size: 11px; }
+            .brand-container { min-width: 0; gap: 9px; }
+            .logo-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             .hero { height: 78vh; padding: 0 24px; }
             .hero-top-text { flex-direction: column; align-items: flex-start; gap: 0; margin-top: 15vh; }
             .hero-top-text span { font-size: 12vw; }
@@ -184,8 +344,23 @@
             .cart-panel { width: 100%; right: -100%; }
             .testimonial-wrapper { flex-direction: column; padding: 40px 20px; }
             .testi-text { padding-right: 0; margin-bottom: 40px; text-align: center; }
+            .testi-controls { justify-content: center; }
             .testi-card { width: 100%; padding: 30px; }
             .paperclip { right: 20px; }
+            .menu-list { grid-template-columns: 1fr; }
+            .section-nav-inner { padding: 12px 24px; }
+            .section-nav { top: 70px; }
+            .builder-teaser { padding: 55px 26px; }
+            .section-padding { padding-top: 70px; padding-bottom: 70px; }
+            .pay-head, .pay-body, .pay-foot { padding-left: 22px; padding-right: 22px; }
+            .cart-header, .cart-items, .cart-footer { padding-left: 22px; padding-right: 22px; }
+        }
+
+        @media (max-width: 430px) {
+            .logo-text { font-size: 13px; letter-spacing: 0.5px; }
+            .cart-icon-btn { padding: 8px 13px; font-size: 10px; letter-spacing: 0.5px; }
+            .nav-toggle { width: 36px; height: 36px; }
+            .course-tab { letter-spacing: 1px; font-size: 11px; }
         }
     </style>
 </head>
@@ -200,6 +375,7 @@
         <nav class="nav-links" id="nav-links">
             <button class="nav-btn" data-page="home" onclick="showPage('home')">Home</button>
             <button class="nav-btn" data-page="menu" onclick="showPage('menu')">Menu</button>
+            <button class="nav-btn" data-page="create" onclick="showPage('create')">Build Your Meal</button>
             <button class="nav-btn" data-page="story" onclick="showPage('story')">Our Story</button>
         </nav>
         <div style="display:flex; align-items:center; gap: 14px;">
@@ -214,6 +390,7 @@
     <nav class="mobile-nav" id="mobile-nav">
         <button class="nav-btn" data-page="home" onclick="showPage('home'); toggleMobileNav();">Home</button>
         <button class="nav-btn" data-page="menu" onclick="showPage('menu'); toggleMobileNav();">Menu</button>
+        <button class="nav-btn" data-page="create" onclick="showPage('create'); toggleMobileNav();">Build Your Meal</button>
         <button class="nav-btn" data-page="story" onclick="showPage('story'); toggleMobileNav();">Our Story</button>
     </nav>
 
@@ -222,13 +399,16 @@
         <section class="hero">
             <div class="hero-top-text">
                 <span>Baked</span>
-               <span><i>with</i> Love</span>
+                <span><i>with</i> Love</span>
             </div>
             <div class="hero-bottom">
                 <p>Freshly baked treats with a golden, flaky texture and rich buttery flavor crafted with care to make every moment feel special.</p>
-                <button class="hero-pill-btn" onclick="showPage('menu')">
-                    Explore Our Menu <span>→</span>
-                </button>
+                <div class="hero-actions">
+                    <button class="hero-pill-btn" onclick="showPage('menu')">
+                        Explore Our Menu <span>→</span>
+                    </button>
+                    <button class="hero-pill-btn ghost" onclick="showPage('create')">Build Your Own</button>
+                </div>
             </div>
         </section>
 
@@ -238,67 +418,32 @@
             <div class="grid-header">
                 <h2>The Art of Food</h2>
             </div>
-            <div class="product-grid">
-                
-                <!-- Item 1: Grand Breakfast -->
-                <div class="menu-item-card">
-                    <div class="img-container"><img loading="lazy" src="BRBR7868.jpeg" alt="Grand Breakfast"></div>
-                    <h3>Rereandco Grand Breakfast</h3>
-                    <p class="desc">Eggs, bacon, sausages, mushrooms, baked beans, hash browns, & pancakes.</p>
-                    <div class="card-bottom">
-                        <span class="price">₦18,000</span>
-                        <button class="add-cart-text" onclick="addToCart('Grand Breakfast', 18000, event)">Add to Cart <span>+</span></button>
-                    </div>
-                </div>
-
-                <!-- Item 2: Naija Brunch -->
-                <div class="menu-item-card">
-                    <div class="img-container"><img loading="lazy" src="EFQC7796.JPG" alt="Naija Brunch"></div>
-                    <h3>Rereandco Naija Brunch</h3>
-                    <p class="desc">Jollof Rice, Plantain, Coleslaw and Chicken.</p>
-                    <div class="card-bottom">
-                        <span class="price">₦14,000</span>
-                        <button class="add-cart-text" onclick="addToCart('Naija Brunch', 14000, event)">Add to Cart <span>+</span></button>
-                    </div>
-                </div>
-
-                <!-- Item 3: Signature Burger -->
-                <div class="menu-item-card">
-                    <div class="img-container"><img loading="lazy" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" alt="Signature Burger"></div>
-                    <h3>Rereandco Signature Burger</h3>
-                    <p class="desc">Double beef patties, double cheese, caramelised onions, & crispy bacon.</p>
-                    <div class="card-bottom">
-                        <span class="price">₦11,000</span>
-                        <button class="add-cart-text" onclick="addToCart('Signature Burger', 11000, event)">Add to Cart <span>+</span></button>
-                    </div>
-                </div>
-
-                <!-- Item 4: Breakfast Board -->
-                <div class="menu-item-card">
-                    <div class="img-container"><img loading="lazy" src="DCCT4399.JPG" alt="Breakfast Board"></div>
-                    <h3>Rereandco Breakfast Board</h3>
-                    <p class="desc">Sharing board for two. Pancakes, waffles, eggs, bacon, croissant & fruits.</p>
-                    <div class="card-bottom">
-                        <span class="price">₦22,000</span>
-                        <button class="add-cart-text" onclick="addToCart('Breakfast Board', 22000, event)">Add to Cart <span>+</span></button>
-                    </div>
-                </div>
-
-            </div>
+            <div class="product-grid reveal" id="featured-grid"></div>
             <div style="text-align: center; margin-top: 60px;">
-                <a onclick="showPage('menu')" style="cursor: pointer; text-decoration: none; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--dark); padding-bottom: 4px;">See Full Menu ↗</a>
+                <button onclick="showPage('menu')" style="cursor: pointer; background:none; border:none; font-family:inherit; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--dark); padding-bottom: 4px; color: var(--dark);">See Full Menu ↗</button>
+            </div>
+        </section>
+
+        <!-- Builder Teaser -->
+        <section class="container" style="padding-top: 60px;">
+            <div class="builder-teaser reveal">
+                <span class="section-label" style="color: var(--gold);">Make It Yours</span>
+                <h2>Build Your Own Plate</h2>
+                <p>Start with a base, stack it with the things you love, and we'll make it exactly the way you want it. Breakfast plates, brunch boxes and sharing platters — built by you.</p>
+                <button class="btn-gold" onclick="showPage('create')">Start Building</button>
             </div>
         </section>
 
         <!-- Testimonials Section -->
-        <section class="container">
-            <div class="testimonial-wrapper">
+        <section class="container" style="padding-top: 40px;">
+            <div class="testimonial-wrapper reveal">
                 <div class="testi-text">
                     <h4>Testimonials</h4>
                     <h2>A Shared Passion For Flavor</h2>
                     <p>Hear the stories of those who have shared in our passion for authentic baking and unforgettable weekend brunches in Port Harcourt.</p>
                     <div class="testi-controls">
-                        <span onclick="prevTestimonial()">←</span> &nbsp; <span onclick="nextTestimonial()">→</span>
+                        <button onclick="prevTestimonial()" aria-label="Previous testimonial">←</button>
+                        <button onclick="nextTestimonial()" aria-label="Next testimonial">→</button>
                     </div>
                 </div>
                 <div class="testi-card" id="testi-card">
@@ -322,10 +467,14 @@
             <div class="grid-header" style="margin-bottom: 40px;">
                 <h2>Curious About Our Bakes?</h2>
             </div>
-            
+
             <div class="faq-item">
                 <button class="faq-question" onclick="toggleFAQ(this)">Do you offer delivery in Port Harcourt? <span class="faq-icon">+</span></button>
-                <div class="faq-answer">Yes, we deliver across the city. Simply add items to your cart, click checkout to connect with us on WhatsApp, let us know your location, and our dispatch team will handle the rest.</div>
+                <div class="faq-answer">Yes, we deliver across the city. Simply add items to your order, proceed to payment, then send us your order on WhatsApp — let us know your location and our dispatch team will handle the rest.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">How do I pay for my order? <span class="faq-icon">+</span></button>
+                <div class="faq-answer">We accept bank transfer. When you proceed to payment we'll show you our account details — transfer the exact total, tap "I've made payment", and your order details will be sent to us on WhatsApp so our team can confirm it.</div>
             </div>
             <div class="faq-item">
                 <button class="faq-question" onclick="toggleFAQ(this)">Are your pastries baked fresh? <span class="faq-icon">+</span></button>
@@ -342,151 +491,48 @@
         </section>
     </div>
 
-    <!-- ================= FULL MENU PAGE ================= -->
+    <!-- ================= MENU PAGE ================= -->
     <div id="page-menu" class="page">
-        <div class="container">
-            <div class="menu-tabs">
-                <button class="menu-tab active" onclick="filterMenu('all', event)">All Items</button>
-                <button class="menu-tab" onclick="filterMenu('breakfast', event)">Breakfast & Eggs</button>
-                <button class="menu-tab" onclick="filterMenu('brunch', event)">Burgers & Wraps</button>
-                <button class="menu-tab" onclick="filterMenu('crepes', event)">Platters & Crepes</button>
-                <button class="menu-tab" onclick="filterMenu('bakery', event)">Bakery & Drinks</button>
+        <div class="container menu-hero">
+            <span class="section-label">The Rereandco Menu</span>
+            <h1>Morning &amp; Midday</h1>
+            <p>Handcrafted breakfast and brunch, served daily in the heart of Port Harcourt.</p>
+            <div class="course-tabs">
+                <button class="course-tab active" data-course="breakfast" onclick="showCourse('breakfast')">Breakfast</button>
+                <button class="course-tab" data-course="brunch" onclick="showCourse('brunch')">Brunch</button>
             </div>
-            
-            <div class="product-grid" id="full-menu-grid" style="margin-bottom: 120px;">
-                <!-- BREAKFAST -->
-                <div class="menu-item-card" data-category="breakfast">
-                    <div class="img-container"><img loading="lazy" src="BRBR7868.jpeg" alt="Grand Breakfast"></div>
-                    <h3>Rereandco Grand Breakfast</h3>
-                    <p class="desc">Eggs, bacon, sausages, mushrooms, baked beans, hash browns, & pancakes.</p>
-                    <div class="card-bottom"><span class="price">₦18,000</span><button class="add-cart-text" onclick="addToCart('Grand Breakfast', 18000, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="breakfast">
-                    <div class="img-container"><img loading="lazy" src="DCCT4399.JPG" alt="Breakfast Board"></div>
-                    <h3>Rereandco Breakfast Board</h3>
-                    <p class="desc">Sharing board for two. Pancakes, waffles, eggs, bacon, croissant & fruits.</p>
-                    <div class="card-bottom"><span class="price">₦22,000</span><button class="add-cart-text" onclick="addToCart('Breakfast Board', 22000, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="breakfast">
-                    <div class="img-container"><img loading="lazy" src="EFQC7796.JPG" alt="Naija Brunch"></div>
-                    <h3>Rereandco Naija Brunch</h3>
-                    <p class="desc">Jollof Rice, Plantain, Coleslaw and Chicken.</p>
-                    <div class="card-bottom"><span class="price">₦14,000</span><button class="add-cart-text" onclick="addToCart('Naija Brunch', 14000, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="breakfast">
-                    <div class="img-container"><img loading="lazy" src="HHCW5456.jpg" alt="Chicken Waffle"></div>
-                    <h3>Chicken & Waffle</h3>
-                    <p class="desc">Crispy fried chicken, Belgian waffle, maple syrup & spicy honey.</p>
-                    <div class="card-bottom"><span class="price">₦12,000</span><button class="add-cart-text" onclick="addToCart('Chicken & Waffle', 12000, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="breakfast">
-                    <div class="img-container"><img loading="lazy" src="RYED4380.JPG" alt="Pancakes"></div>
-                    <h3>Classic Pancake Stack</h3>
-                    <p class="desc">Fluffy pancakes, butter & maple syrup.</p>
-                    <div class="card-bottom"><span class="price">₦5,000</span><button class="add-cart-text" onclick="addToCart('Pancake Stack', 5000, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="breakfast">
-                    <div class="img-container"><img loading="lazy" src="brioche-french-toast-10.jpg" alt="French Toast"></div>
-                    <h3>French Toast Royale</h3>
-                    <p class="desc">Brioche french toast, caramelised bananas, berries, whipped cream & syrup.</p>
-                    <div class="card-bottom"><span class="price">₦8,500</span><button class="add-cart-text" onclick="addToCart('French Toast Royale', 8500, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="breakfast">
-                    <div class="img-container"><img loading="lazy" src="avocado-6b1cf76.webp" alt="Avocado Toast"></div>
-                    <h3>Avocado Toast</h3>
-                    <p class="desc">Sourdough, smashed avocado, poached egg, cherry tomatoes & chilli flakes.</p>
-                    <div class="card-bottom"><span class="price">₦8,500</span><button class="add-cart-text" onclick="addToCart('Avocado Toast', 8500, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="breakfast">
-                    <div class="img-container"><img loading="lazy" src="17205-eggs-benedict.webp" alt="Eggs Benedict"></div>
-                    <h3>Eggs Benedict</h3>
-                    <p class="desc">Toasted English muffin, poached eggs, turkey/chicken ham & hollandaise.</p>
-                    <div class="card-bottom"><span class="price">₦12,000</span><button class="add-cart-text" onclick="addToCart('Eggs Benedict', 12000, event)">Add <span>+</span></button></div>
-                </div>
+        </div>
 
-                <!-- BRUNCH & BURGERS -->
-                <div class="menu-item-card" data-category="brunch">
-                    <div class="img-container"><img loading="lazy" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" alt="Signature Burger"></div>
-                    <h3>Rereandco Signature Burger</h3>
-                    <p class="desc">Double beef patties, double cheese, caramelised onions, & crispy bacon.</p>
-                    <div class="card-bottom"><span class="price">₦11,000</span><button class="add-cart-text" onclick="addToCart('Signature Burger', 11000, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="brunch">
-                    <div class="img-container"><img loading="lazy" src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80" alt="Classic Burger"></div>
-                    <h3>Classic Beef Burger</h3>
-                    <p class="desc">Seasoned beef patty, cheese, lettuce, tomatoes, caramelised onions.</p>
-                    <div class="card-bottom"><span class="price">₦9,000</span><button class="add-cart-text" onclick="addToCart('Classic Beef Burger', 9000, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="brunch">
-                    <div class="img-container"><img loading="lazy" src="chicken-fajita-wraps-01.jpg" alt="Chicken Wrap"></div>
-                    <h3>Chicken Fajita Wrap</h3>
-                    <p class="desc">Spiced chicken, peppers & onions, lettuce, cheese & house sauce.</p>
-                    <div class="card-bottom"><span class="price">₦7,000</span><button class="add-cart-text" onclick="addToCart('Chicken Fajita Wrap', 7000, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="brunch">
-                    <div class="img-container"><img loading="lazy" src="HFEI0664.JPG" alt="Club Sandwich" loading="lazy"></div>
-                    <h3>Chicken Club Sandwich</h3>
-                    <p class="desc">Grilled chicken, bacon, egg, lettuce, tomatoes & cheese with chips.</p>
-                    <div class="card-bottom"><span class="price">₦7,500</span><button class="add-cart-text" onclick="addToCart('Club Sandwich', 7500, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="brunch">
-                    <div class="img-container"><img loading="lazy" src="ERJP9562.JPG" alt="Chef Salad"></div>
-                    <h3>Chef's Signature Salad</h3>
-                    <p class="desc">Chicken, prawns, eggs, avocado, vegetables & house dressing.</p>
-                    <div class="card-bottom"><span class="price">₦14,000</span><button class="add-cart-text" onclick="addToCart('Chef Signature Salad', 14000, event)">Add <span>+</span></button></div>
-                </div>
+        <div class="section-nav">
+            <div class="section-nav-inner" id="section-nav-inner"></div>
+        </div>
 
-                <!-- PLATTERS & CREPES -->
-                <div class="menu-item-card" data-category="crepes">
-                    <div class="img-container"><img loading="lazy" src="NZNF7652.JPG" alt="Platter"></div>
-                    <h3>The Rereandco Platter</h3>
-                    <p class="desc">Wings, spring rolls, samosas, chicken kebabs, chips, plantain & dips.</p>
-                    <div class="card-bottom"><span class="price">₦22,000</span><button class="add-cart-text" onclick="addToCart('Rereandco Platter', 22000, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="crepes">
-                    <div class="img-container"><img loading="lazy" src="Crispy-Chicken-Burger-tall-FS-4512.webp" alt="Feast Box"></div>
-                    <h3>The Brunch Box</h3>
-                    <p class="desc">Chicken burger + chips + chicken wings + coleslaw + drink.</p>
-                    <div class="card-bottom"><span class="price">₦15,000</span><button class="add-cart-text" onclick="addToCart('Brunch Box', 15000, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="crepes">
-                    <div class="img-container"><img loading="lazy" src="shrimp-crepes-2-2.jpg" alt="Crepe"></div>
-                    <h3>Shrimps & Cheese Crepe</h3>
-                    <p class="desc">Succulent shrimps in a creamy sauce folded into a delicate French crepe.</p>
-                    <div class="card-bottom"><span class="price">₦10,000</span><button class="add-cart-text" onclick="addToCart('Shrimps Crepe', 10000, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="crepes">
-                    <div class="img-container"><img loading="lazy" src="Banana-Crepes-with-Nutella-16-2.jpg" alt="Nutella Crepe"></div>
-                    <h3>Nutella & Banana Crepe</h3>
-                    <p class="desc">Sweet crepe filled with Nutella, fresh banana & whipped cream.</p>
-                    <div class="card-bottom"><span class="price">₦6,000</span><button class="add-cart-text" onclick="addToCart('Nutella Crepe', 6000, event)">Add <span>+</span></button></div>
-                </div>
+        <div class="container" id="menu-content" style="padding-bottom: 120px;"></div>
+    </div>
 
-                <!-- BAKERY & DRINKS -->
-                <div class="menu-item-card" data-category="bakery">
-                    <div class="img-container"><img loading="lazy" src="croissant-images.jpg" alt="Croissant"></div>
-                    <h3>Butter Croissant</h3>
-                    <p class="desc">Freshly baked, golden, flaky, and rich with premium French butter.</p>
-                    <div class="card-bottom"><span class="price">₦3,000</span><button class="add-cart-text" onclick="addToCart('Butter Croissant', 3000, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="bakery">
-                    <div class="img-container"><img loading="lazy" src="IMG_1641-chocolate-croissant.jpg" alt="Pain au Chocolat"></div>
-                    <h3>Pain au Chocolat</h3>
-                    <p class="desc">Classic flaky pastry folded over rich dark chocolate batons.</p>
-                    <div class="card-bottom"><span class="price">₦3,500</span><button class="add-cart-text" onclick="addToCart('Pain au Chocolat', 3500, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="bakery">
-                    <div class="img-container"><img loading="lazy" src="iced-caramel-latte.webp" alt="Caramel Coffee"></div>
-                    <h3>Caramel Cloud Coffee</h3>
-                    <p class="desc">Signature iced coffee topped with rich, velvety caramel cream.</p>
-                    <div class="card-bottom"><span class="price">₦7,000</span><button class="add-cart-text" onclick="addToCart('Caramel Coffee', 7000, event)">Add <span>+</span></button></div>
-                </div>
-                <div class="menu-item-card" data-category="bakery">
-                    <div class="img-container"><img loading="lazy" src="best-hot-chocolate.webp" alt="Hot Chocolate"></div>
-                    <h3>Classic Hot Chocolate</h3>
-                    <p class="desc">Rich, creamy hot cocoa made with premium chocolate.</p>
-                    <div class="card-bottom"><span class="price">₦6,000</span><button class="add-cart-text" onclick="addToCart('Hot Chocolate', 6000, event)">Add <span>+</span></button></div>
-                </div>
+    <!-- ================= BUILD YOUR MEAL PAGE ================= -->
+    <div id="page-create" class="page">
+        <div class="container builder-hero">
+            <span class="section-label">Make It Yours</span>
+            <h1>Build Your Own</h1>
+            <p>Pick a style, choose everything that goes on it, and watch your plate come together. We'll prepare it exactly as you build it.</p>
+            <div class="builder-modes" id="builder-modes"></div>
+        </div>
+
+        <div class="container">
+            <div class="builder-layout">
+                <div id="builder-steps"></div>
+                <aside class="builder-summary">
+                    <h3 id="bs-title">Your Creation</h3>
+                    <div class="bs-sub" id="bs-sub">Start choosing to see it come together.</div>
+                    <ul class="bs-list" id="bs-list"></ul>
+                    <div class="bs-total">
+                        <span>Total</span>
+                        <span id="bs-total">₦0</span>
+                    </div>
+                    <button class="btn-gold" id="bs-add" onclick="addBuildToCart()" disabled>Add To Order</button>
+                    <button class="btn-text" onclick="resetBuilder()">Start Over</button>
+                </aside>
             </div>
         </div>
     </div>
@@ -498,7 +544,7 @@
                 <span class="section-label">Our Story</span>
                 <h1>Crafted with Heart,<br>Baked to Perfection.</h1>
             </div>
-            
+
             <div class="circle-layout">
                 <img loading="lazy" src="BJBT0547.JPG" alt="Food Texture" class="circle circle-1">
                 <img loading="lazy" src="EFQC7796.JPG" alt="Kitchen Prep" class="circle circle-2">
@@ -513,32 +559,50 @@
         </div>
     </div>
 
-    <!-- ================= SHOPPING CART SIDEBAR ================= -->
+    <!-- ================= ORDER PANEL ================= -->
     <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
-    <div class="cart-panel" id="cart-panel">
+    <div class="cart-panel" id="cart-panel" aria-label="Your order">
         <div class="cart-header">
             <h2>Your Order</h2>
-            <button class="close-cart" onclick="toggleCart()">×</button>
+            <button class="close-cart" onclick="toggleCart()" aria-label="Close order panel">&times;</button>
         </div>
-        <div class="cart-items" id="cart-items-container">
-            <p style="text-align:center; color:#999; margin-top: 50px; font-size: 14px;">Your cart is beautifully empty.</p>
-        </div>
+        <div class="cart-items" id="cart-items-container"></div>
         <div class="cart-footer">
+            <div class="cart-line"><span>Subtotal</span><span id="cart-subtotal">₦0</span></div>
             <div class="cart-total">
                 <span>Total</span>
                 <span id="cart-total-price">₦0</span>
             </div>
-            <button class="checkout-btn" onclick="checkoutToWhatsApp()">Checkout via WhatsApp</button>
+            <button class="btn-gold" id="checkout-btn" onclick="openPayment()">Proceed To Payment</button>
+            <div class="cart-foot-links">
+                <button onclick="toggleCart()">Keep Browsing</button>
+                <button onclick="clearCart()">Clear Order</button>
+            </div>
         </div>
     </div>
+
+    <!-- ================= PAYMENT MODAL ================= -->
+    <div class="pay-overlay" id="pay-overlay">
+        <div class="pay-modal" role="dialog" aria-modal="true" aria-labelledby="pay-title">
+            <div class="pay-head">
+                <h2 id="pay-title">Complete Your Payment</h2>
+                <button class="close-cart" onclick="closePayment()" aria-label="Close payment">&times;</button>
+            </div>
+            <div class="pay-body" id="pay-body"></div>
+            <div class="pay-foot" id="pay-foot"></div>
+        </div>
+    </div>
+
+    <!-- ================= TOAST ================= -->
+    <div class="toast" id="toast"><span class="dot"></span><span id="toast-text"></span></div>
 
     <!-- ================= FOOTER ================= -->
     <footer>
         <div class="footer-logo">Rereandco</div>
-        <div style="display: flex; justify-content: center; gap: 40px; margin-bottom: 30px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">
-            <span style="color: white;">39 Woji Road GRA II, PH</span>
-            <span style="color: white;">0916 672 9573</span>
-            <a href="https://www.instagram.com/cafe_rereandco/" target="_blank" style="color: white; text-decoration: underline;">Instagram: @cafe_rereandco</a>
+        <div class="footer-info">
+            <span>39 Woji Road GRA II, PH</span>
+            <a href="tel:+2349166729573">0916 672 9573</a>
+            <a href="https://www.instagram.com/cafe_rereandco/" target="_blank" rel="noopener">Instagram: @cafe_rereandco</a>
         </div>
         <div class="footer-bottom">
             <span>© 2026 REREANDCO. ALL RIGHTS RESERVED.</span>
@@ -546,10 +610,776 @@
         </div>
     </footer>
 
-    <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
-        // Page Routing Logic
-        const VALID_PAGES = ['home', 'menu', 'story'];
+        /* =========================================================
+           MENU DATA  —  edit prices/items here, the site rebuilds itself
+           price: null  =>  shown as "Price on request", not orderable
+           ========================================================= */
+        const MENU = {
+            breakfast: {
+                label: 'Breakfast',
+                sections: [
+                    {
+                        id: 'signatures', name: 'The Rereandco Signatures', note: 'Our most-loved plates',
+                        featured: true,
+                        items: [
+                            { name: 'Rereandco Breakfast Board', desc: 'A beautiful sharing board filled with pancakes, waffles, eggs, bacon, sausages, croissant, fresh fruits & more. Perfect for two.', price: 22000, img: 'DCCT4399.JPG' },
+                            { name: 'Rereandco Grand Breakfast', desc: 'The full experience! Eggs, bacon, sausages, mushrooms, baked beans, hash browns, grilled tomatoes, sourdough & fluffy pancakes.', price: 18000, img: 'BRBR7868.jpeg' },
+                            { name: 'Rereandco Naija Brunch', desc: 'Jollof Rice, Plantain, Coleslaw and Chicken.', price: 14000, img: 'EFQC7796.JPG' },
+                            { name: 'Chicken & Waffle', desc: 'Crispy fried chicken, Belgian waffle, maple syrup & spicy honey.', price: 12000, img: 'HHCW5456.jpg' },
+                            { name: 'French Toast Royale', desc: 'Brioche french toast, caramelised bananas, berries, whipped cream & syrup.', price: 8500, img: 'brioche-french-toast-10.jpg' }
+                        ]
+                    },
+                    {
+                        id: 'pancakes', name: 'Pancakes, Waffles & French Toast', note: 'Sweet mornings',
+                        items: [
+                            { name: 'Classic Pancake Stack', desc: 'Fluffy pancakes, butter & maple syrup.', price: 5000 },
+                            { name: 'Berry Bliss Pancakes', desc: 'Pancakes, whipped cream, fresh fruit & berry sauce.', price: 8500 },
+                            { name: 'Nutella Crunch Pancakes', desc: 'Pancakes, Nutella, banana, toasted nuts & whipped cream.', price: 9000 },
+                            { name: 'Chicken & Waffle', desc: 'Crispy fried chicken, Belgian waffle, maple syrup & spicy honey.', price: 12000 },
+                            { name: 'Loaded Waffle', desc: 'Belgian waffle, vanilla ice cream, fruits, whipped cream & chocolate sauce.', price: 9000 },
+                            { name: 'French Toast Royale', desc: 'Brioche french toast, caramelised bananas, whipped cream, berries & syrup.', price: 8500 }
+                        ]
+                    },
+                    {
+                        id: 'eggs', name: 'Eggs & Savoury', note: 'Savoury starts',
+                        items: [
+                            { name: 'Rereandco Breakfast Omelette', desc: 'Three-egg omelette with cheese, mushrooms, peppers, onions & chicken sausage. Served with toast.', price: 8000 },
+                            { name: 'The Breakfast Croissant', desc: 'Croissant, scrambled eggs, cheese, chicken sausage & bacon.', price: 8500 },
+                            { name: 'Sourdough & Eggs', desc: 'Toasted sourdough, creamy scrambled eggs, avocado & chilli oil.', price: 7500 },
+                            { name: 'Shakshuka', desc: 'Eggs baked in a rich spiced tomato & pepper sauce. Served with toasted sourdough.', price: 9500 },
+                            { name: 'Eggs Benedict', desc: 'Toasted English muffin, poached eggs, turkey/chicken ham & creamy hollandaise.', price: 12000 }
+                        ]
+                    },
+                    {
+                        id: 'african', name: 'The African Breakfast Table', note: 'Home flavours',
+                        items: [
+                            { name: 'Rereandco Nigerian Breakfast', desc: 'Akara, pap, boiled eggs, plantain & mini puff-puff.', price: 10000, tag: 'Saturdays Only' },
+                            { name: 'Yam & Egg Sauce', desc: 'Crispy fried/boiled yam with rich peppered egg sauce.', price: 9000 },
+                            { name: 'Plantain & Egg Platter', desc: 'Sweet ripe plantain, scrambled eggs, chicken sausage & pepper sauce.', price: 9000 },
+                            { name: 'Moi Moi Breakfast Bowl', desc: 'Steamed moi moi, boiled egg, plantain & light pepper sauce.', price: 8500 }
+                        ]
+                    },
+                    {
+                        id: 'light', name: 'Light & Beautiful', note: 'Fresh & easy',
+                        items: [
+                            { name: 'Avocado Toast', desc: 'Sourdough, smashed avocado, poached egg, cherry tomatoes & chilli flakes.', price: 8500, img: 'avocado-6b1cf76.webp' },
+                            { name: 'Granola & Yoghurt Parfait', desc: 'Greek-style yoghurt, Rereandco granola, fresh fruits & honey.', price: 7000, img: 'JDOT1112.JPG' },
+                            { name: 'Tropical Breakfast Bowl', desc: 'Greek yoghurt, banana, pineapple, mango, granola & honey.', price: 8000 },
+                            { name: 'Smoked Chicken & Avocado Toast', desc: 'Sourdough, avocado, smoked chicken, poached egg & house dressing.', price: 10000 }
+                        ]
+                    },
+                    {
+                        id: 'bakery', name: 'The Bakery Breakfast', note: 'From our ovens',
+                        items: [
+                            { name: 'Butter Croissant', desc: 'Freshly baked, golden, flaky, and rich with premium French butter.', price: 3000, img: 'croissant-images.jpg' },
+                            { name: 'Pain au Chocolat', desc: 'Classic flaky pastry folded over rich dark chocolate batons.', price: 3500, img: 'IMG_1641-chocolate-croissant.jpg' },
+                            { name: 'Croissant & Coffee Combo', desc: 'Butter Croissant + Americano or Tea.', price: 5500 },
+                            { name: 'Cinnamon Roll', desc: 'Soft, swirled and glazed.', price: 3500 },
+                            { name: 'Banana Bread & Butter', desc: 'House-baked banana loaf, served warm with butter.', price: 4500 },
+                            { name: 'Breakfast Pastry Box', desc: 'Croissant + Cinnamon Roll + Banana Loaf + Seasonal Pastry.', price: 10000, img: 'NIZE4705.JPG' }
+                        ]
+                    }
+                ],
+                drinks: {
+                    id: 'bfast-drinks', name: 'Breakfast Drinks',
+                    groups: [
+                        { name: 'Coffee', items: ['Espresso', 'Americano', 'Cappuccino', 'Latte', 'Mocha', 'Caramel Latte', 'Vanilla Latte'] },
+                        { name: 'Tea', items: ['English Breakfast Tea', 'Green Tea', 'Ginger & Lemon Tea', 'Chai Latte'] },
+                        { name: 'Signature Drinks', items: ['Rereandco Iced Latte', 'Strawberry Cream Latte', 'Caramel Cloud Coffee'] },
+                        { name: 'Fresh Juices', items: ['Fresh Orange Juice', 'Pineapple Ginger Juice', 'Mango Passion Juice'] },
+                        { name: 'Smoothies', items: ['Mango Passion Smoothie', 'Strawberry Banana Smoothie', 'Tropical Smoothie'] },
+                        { name: 'Milkshakes', items: ['Vanilla', 'Chocolate', 'Strawberry', 'Cookies & Cream'] },
+                        { name: 'Hot Beverages', items: ['Hot Chocolate'] }
+                    ]
+                }
+            },
+            brunch: {
+                label: 'Brunch',
+                sections: [
+                    {
+                        id: 'burgers', name: 'Burgers', note: 'Stacked & seasoned',
+                        featured: true,
+                        items: [
+                            { name: 'Rereandco Signature Burger', desc: 'Double beef patties, double cheese, caramelised onions, crispy bacon & signature sauce.', price: 11000, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80' },
+                            { name: 'Breakfast Burger', desc: 'Beef/chicken patty, fried egg, cheese, crispy bacon, lettuce & house sauce.', price: 9500 },
+                            { name: 'Classic Beef Burger', desc: 'Seasoned beef patty, cheese, lettuce, tomatoes, caramelised onions & house sauce.', price: 9000, img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80' },
+                            { name: 'Regular Burger', desc: 'Beef/chicken patty, lettuce, cheese, tomatoes & house sauce.', price: null }
+                        ]
+                    },
+                    {
+                        id: 'sandwiches', name: 'Sandwiches', note: 'Between good bread',
+                        items: [
+                            { name: 'Chicken Club Sandwich', desc: 'Grilled chicken, bacon, egg, lettuce, tomatoes & cheese served with chips.', price: 7500, img: 'HFEI0664.JPG' },
+                            { name: 'Pulled Beef Sandwich', desc: 'Slow-cooked pulled beef, caramelised onions, cheese & house sauce.', price: 8500 },
+                            { name: 'BLT Sandwich', desc: 'Crispy bacon, lettuce, tomatoes & creamy dressing.', price: 6000 },
+                            { name: 'Chicken & Cheese Melt', desc: 'Seasoned chicken, melted cheese, lettuce & creamy house dressing.', price: 5500 },
+                            { name: 'Tuna Melt', desc: 'Creamy tuna, cheese & toasted bread.', price: 5500 },
+                            { name: 'Ham & Cheese Sandwich', desc: 'Classic and delicious.', price: 4500 }
+                        ]
+                    },
+                    {
+                        id: 'wraps', name: 'Wraps', note: 'Rolled & ready',
+                        items: [
+                            { name: 'Chicken Fajita Wrap', desc: 'Spiced chicken, peppers & onions, lettuce, cheese & house sauce.', price: 7000, img: 'chicken-fajita-wraps-01.jpg' },
+                            { name: 'Steak Wrap', desc: 'Tender steak strips, peppers, onions, cheese & signature sauce.', price: 9000 },
+                            { name: 'Shrimp Wrap', desc: 'Seasoned shrimp, fresh vegetables & creamy dressing.', price: 10000 }
+                        ]
+                    },
+                    {
+                        id: 'salads', name: 'Salads', note: 'Crisp & bright',
+                        items: [
+                            { name: "Chef's Signature Salad", desc: 'Chicken, prawns, eggs, avocado, vegetables & house dressing.', price: 14000, img: 'ERJP9562.JPG' },
+                            { name: 'Shrimp Salad', desc: 'Juicy prawns, fresh vegetables & dressing.', price: 13000 },
+                            { name: 'Grilled Fish Salad', desc: 'Fresh greens, grilled fish & house dressing.', price: 11000, img: 'MSNJ0235.JPG' },
+                            { name: 'Rereandco Garden Salad', desc: 'Fresh lettuce, cucumber, tomatoes, carrots, sweet corn & house dressing.', price: 6500 }
+                        ]
+                    },
+                    {
+                        id: 'comfort', name: 'Comfort Plates', note: 'Warm & filling',
+                        groups: [
+                            {
+                                label: 'Mashed Potatoes',
+                                items: [
+                                    { name: 'Creamy Mashed Potatoes', desc: 'Smooth, buttery and rich.', price: 5000 },
+                                    { name: 'Garlic Mashed Potatoes', desc: 'Creamy mash with roasted garlic.', price: 6000 },
+                                    { name: 'Mashed Potatoes + Chicken in Brown Sauce', desc: 'Creamy mash topped with tender chicken in rich brown sauce.', price: 9500, img: 'EIAR4352.JPG' },
+                                    { name: 'Mashed Potatoes + Grilled Chicken', desc: 'Creamy mash served with grilled chicken.', price: 10000 },
+                                    { name: 'Mashed Potatoes + Beef in Pepper Sauce', desc: 'Creamy mash with beef in spicy pepper sauce.', price: 11000 },
+                                    { name: 'Mashed Potatoes + Grilled Fish', desc: 'Creamy mash served with grilled fish.', price: 12000 }
+                                ]
+                            },
+                            {
+                                label: 'Chips',
+                                items: [
+                                    { name: 'Classic Chips', desc: 'Golden and crisp.', price: 4000 },
+                                    { name: 'Seasoned Chips', desc: 'Tossed in our house seasoning.', price: 5000 },
+                                    { name: 'Chicken Loaded Chips', desc: 'Chips loaded with seasoned chicken and sauce.', price: 8500 },
+                                    { name: 'Cheese Loaded Chips', desc: 'Chips smothered in melted cheese sauce.', price: 9000 },
+                                    { name: 'Rere Loaded Chips', desc: 'The full works — chicken, cheese, sauces and more.', price: 12000 }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'crepes', name: 'Stuffed Crepes', note: 'Sweet & savoury',
+                        items: [
+                            { name: 'Shrimps & Cheese Crepe', desc: 'Succulent shrimps in a creamy sauce.', price: 10000, img: 'shrimp-crepes-2-2.jpg' },
+                            { name: 'Beef & Cheese Crepe', desc: 'Seasoned beef, cheese, peppers & onions.', price: 8000 },
+                            { name: 'Chicken Fajita Crepe', desc: 'Fajita chicken, sausages, peppers, onions, cheese & creamy sauce.', price: 8000 },
+                            { name: 'Chicken & Cheese Crepe', desc: 'Creamy chicken, cheese & sautéed vegetables.', price: 7000 },
+                            { name: 'Nutella & Banana Crepe', desc: 'Sweet crepe filled with Nutella, banana & whipped cream.', price: 6000, img: 'Banana-Crepes-with-Nutella-16-2.jpg' }
+                        ]
+                    },
+                    {
+                        id: 'platters', name: 'Platters', note: 'Made for sharing',
+                        featured: true,
+                        items: [
+                            { name: "Couples' Brunch Platter", desc: 'Burgers, wings, chips, chicken, prawns, plantain, salad & dips.', price: 40000, img: 'IMG_0957.JPG' },
+                            { name: 'The Ultimate Brunch Platter', desc: 'Mini burgers, wings, peppered snails, spring rolls, samosas, chips, plantain & dips.', price: 35000, img: 'NVMV3040.JPG' },
+                            { name: 'The Rereandco Platter', desc: 'Wings, spring rolls, samosas, chicken kebabs, chips, plantain & dips.', price: 22000, img: 'NZNF7652.JPG' },
+                            { name: 'The Brunch Box', desc: 'Chicken burger + chips + chicken wings + coleslaw + drink.', price: 15000, img: 'Crispy-Chicken-Burger-tall-FS-4512.webp' }
+                        ]
+                    }
+                ],
+                drinks: {
+                    id: 'brunch-drinks', name: 'Brunch Drinks & Cocktails',
+                    groups: [
+                        { name: 'Refreshments', items: ['Fresh Citrus Juice', 'Fresh Fruit Smoothie', 'Milkshake'] },
+                        { name: 'Coffee & Hot', items: ['Iced Coffee', 'Cappuccino', 'Café Latte', 'Hot Chocolate', 'Tea'] },
+                        { name: 'Cocktails', items: ['Our house cocktail list is being finalised — ask our team for today’s mixes.'] }
+                    ]
+                }
+            }
+        };
+
+        /* =========================================================
+           MEAL BUILDER CONFIGS
+           ========================================================= */
+        const BUILDERS = {
+            breakfast: {
+                title: 'Breakfast Plate',
+                sub: 'Build your morning exactly how you like it.',
+                label: 'Your Breakfast Plate',
+                steps: [
+                    { id: 'base', label: 'Choose Your Base', type: 'single', required: true, options: [
+                        { name: 'Pancake Stack', price: 3500 }, { name: 'Belgian Waffle', price: 3500 },
+                        { name: 'Brioche French Toast', price: 4000 }, { name: 'Toasted Sourdough', price: 2500 },
+                        { name: 'Croissant', price: 3000 }, { name: 'Fried/Boiled Yam', price: 3000 }
+                    ]},
+                    { id: 'eggs', label: 'Add Eggs', type: 'single', options: [
+                        { name: 'Scrambled Eggs', price: 1500 }, { name: 'Poached Eggs', price: 1500 },
+                        { name: 'Fried Eggs', price: 1500 }, { name: 'Three-Egg Omelette', price: 2500 }
+                    ]},
+                    { id: 'protein', label: 'Add Protein', type: 'multi', options: [
+                        { name: 'Crispy Bacon', price: 2500 }, { name: 'Chicken Sausage', price: 2500 },
+                        { name: 'Smoked Chicken', price: 3000 }, { name: 'Grilled Chicken', price: 3500 },
+                        { name: 'Grilled Fish', price: 4000 }, { name: 'Turkey Ham', price: 3000 }
+                    ]},
+                    { id: 'sides', label: 'Pick Your Sides', type: 'multi', options: [
+                        { name: 'Hash Browns', price: 1500 }, { name: 'Baked Beans', price: 1000 },
+                        { name: 'Grilled Tomatoes', price: 1000 }, { name: 'Sautéed Mushrooms', price: 1500 },
+                        { name: 'Fried Plantain', price: 1500 }, { name: 'Smashed Avocado', price: 2000 }
+                    ]},
+                    { id: 'toppings', label: 'Finish It Off', type: 'multi', options: [
+                        { name: 'Fresh Berries', price: 2000 }, { name: 'Banana', price: 1000 },
+                        { name: 'Nutella', price: 1500 }, { name: 'Maple Syrup', price: 800 },
+                        { name: 'Whipped Cream', price: 1000 }, { name: 'Toasted Nuts', price: 1200 },
+                        { name: 'Honey', price: 800 }, { name: 'Chilli Oil', price: 500 }
+                    ]},
+                    { id: 'drink', label: 'Add A Drink', type: 'single', options: [
+                        { name: 'Americano', price: 2500 }, { name: 'Latte', price: 3500 },
+                        { name: 'Cappuccino', price: 3500 }, { name: 'English Breakfast Tea', price: 2000 },
+                        { name: 'Fresh Orange Juice', price: 3000 }, { name: 'Hot Chocolate', price: 3500 }
+                    ]}
+                ]
+            },
+            brunch: {
+                title: 'Brunch Box',
+                sub: 'Your main, your sides, your way.',
+                label: 'Your Brunch Box',
+                steps: [
+                    { id: 'main', label: 'Choose Your Main', type: 'single', required: true, options: [
+                        { name: 'Classic Beef Burger', price: 7000 }, { name: 'Chicken Burger', price: 6500 },
+                        { name: 'Chicken Fajita Wrap', price: 5500 }, { name: 'Steak Wrap', price: 7500 },
+                        { name: 'Chicken Club Sandwich', price: 6000 }, { name: 'Chicken & Cheese Crepe', price: 5500 }
+                    ]},
+                    { id: 'side', label: 'Choose A Side', type: 'single', required: true, options: [
+                        { name: 'Classic Chips', price: 3000 }, { name: 'Seasoned Chips', price: 4000 },
+                        { name: 'Garden Salad', price: 4000 }, { name: 'Coleslaw', price: 1500 },
+                        { name: 'Fried Plantain', price: 2000 }, { name: 'Jollof Rice', price: 4000 }
+                    ]},
+                    { id: 'extras', label: 'Load It Up', type: 'multi', options: [
+                        { name: 'Extra Cheese', price: 1000 }, { name: 'Extra Patty', price: 3000 },
+                        { name: 'Crispy Bacon', price: 2500 }, { name: 'Chicken Wings (4)', price: 4000 },
+                        { name: 'Spring Rolls (2)', price: 2000 }, { name: 'Samosas (2)', price: 2000 },
+                        { name: 'Fried Egg', price: 1000 }, { name: 'Avocado', price: 2000 }
+                    ]},
+                    { id: 'dips', label: 'Choose Your Dips', type: 'multi', options: [
+                        { name: 'Garlic Mayo', price: 500 }, { name: 'Spicy Ketchup', price: 500 },
+                        { name: 'BBQ Sauce', price: 500 }, { name: 'Cheese Sauce', price: 800 },
+                        { name: 'Pepper Sauce', price: 500 }
+                    ]},
+                    { id: 'drink', label: 'Add A Drink', type: 'single', options: [
+                        { name: 'Fresh Citrus Juice', price: 3000 }, { name: 'Fruit Smoothie', price: 4000 },
+                        { name: 'Milkshake', price: 4500 }, { name: 'Iced Coffee', price: 3500 },
+                        { name: 'Hot Chocolate', price: 3500 }, { name: 'Tea', price: 2000 }
+                    ]}
+                ]
+            },
+            platter: {
+                title: 'Sharing Platter',
+                sub: 'Build a platter for the table.',
+                label: 'Your Sharing Platter',
+                steps: [
+                    { id: 'size', label: 'Who Is It For?', type: 'single', required: true, options: [
+                        { name: 'For 2', price: 0 }, { name: 'For 4', price: 0 }, { name: 'For 6+', price: 0 }
+                    ]},
+                    { id: 'proteins', label: 'Pick Your Proteins', type: 'multi', required: true, options: [
+                        { name: 'Chicken Wings', price: 5000 }, { name: 'Chicken Kebabs', price: 5500 },
+                        { name: 'Fried Chicken', price: 6000 }, { name: 'Mini Burgers (3)', price: 7500 },
+                        { name: 'Grilled Prawns', price: 8000 }, { name: 'Peppered Snails', price: 9000 },
+                        { name: 'Peppered Beef', price: 6500 }
+                    ]},
+                    { id: 'chops', label: 'Add Small Chops', type: 'multi', options: [
+                        { name: 'Spring Rolls', price: 3500 }, { name: 'Samosas', price: 3500 },
+                        { name: 'Puff-Puff', price: 3000 }, { name: 'Chin-Chin', price: 2500 },
+                        { name: 'Mini Pies', price: 3500 }
+                    ]},
+                    { id: 'sides', label: 'Choose Your Sides', type: 'multi', options: [
+                        { name: 'Classic Chips', price: 3000 }, { name: 'Fried Plantain', price: 2500 },
+                        { name: 'Jollof Rice', price: 4000 }, { name: 'Coleslaw', price: 2000 },
+                        { name: 'Garden Salad', price: 4000 }
+                    ]},
+                    { id: 'dips', label: 'Choose Your Dips', type: 'multi', options: [
+                        { name: 'Garlic Mayo', price: 500 }, { name: 'Spicy Ketchup', price: 500 },
+                        { name: 'BBQ Sauce', price: 500 }, { name: 'Cheese Sauce', price: 800 },
+                        { name: 'Pepper Sauce', price: 500 }
+                    ]}
+                ]
+            }
+        };
+
+        const BANKS = [
+            { bank: 'First Bank', name: 'RERE LIMITED', number: '2024915885' },
+            { bank: 'Access Bank', name: 'RERE LIMITED', number: '0107291650' },
+            { bank: 'UBA', name: 'RERE AND CO SERVICES', number: '1024314618' }
+        ];
+
+        const WHATSAPP_NUMBER = '2349166729573';
+
+        /* =========================================================
+           HELPERS
+           ========================================================= */
+        const naira = n => '₦' + n.toLocaleString();
+        const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-text').textContent = msg;
+            t.classList.add('show');
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => t.classList.remove('show'), 2600);
+        }
+
+        /* =========================================================
+           MENU RENDERING
+           ========================================================= */
+        let currentCourse = 'breakfast';
+
+        function allItems(section) {
+            if (section.groups) return section.groups.flatMap(g => g.items);
+            return section.items || [];
+        }
+
+        function itemCardHTML(item) {
+            const orderable = item.price !== null;
+            return `
+            <div class="menu-item-card">
+                <div class="img-container"><img loading="lazy" src="${esc(item.img)}" alt="${esc(item.name)}"></div>
+                ${item.tag ? `<span class="item-tag">${esc(item.tag)}</span>` : ''}
+                <h3>${esc(item.name)}</h3>
+                <p class="desc">${esc(item.desc)}</p>
+                <div class="card-bottom">
+                    <span class="price">${orderable ? naira(item.price) : 'Price on request'}</span>
+                    ${orderable ? `<button class="add-cart-text" onclick="addToCart('${esc(item.name)}', ${item.price}, event)">Add to Order <span>+</span></button>` : ''}
+                </div>
+            </div>`;
+        }
+
+        function itemRowHTML(item) {
+            const orderable = item.price !== null;
+            return `
+            <div class="menu-row">
+                <div class="menu-row-main">
+                    <div class="menu-row-title">
+                        <h4>${esc(item.name)}</h4>
+                        ${item.tag ? `<span class="item-tag" style="margin:0;">${esc(item.tag)}</span>` : ''}
+                    </div>
+                    <p class="desc">${esc(item.desc)}</p>
+                </div>
+                <div class="menu-row-side">
+                    <span class="price ${orderable ? '' : 'ask'}">${orderable ? naira(item.price) : 'Ask staff'}</span>
+                    ${orderable ? `<button class="row-add" aria-label="Add ${esc(item.name)} to order" onclick="addToCart('${esc(item.name)}', ${item.price}, event)">+</button>` : ''}
+                </div>
+            </div>`;
+        }
+
+        function renderMenu() {
+            const course = MENU[currentCourse];
+            const nav = document.getElementById('section-nav-inner');
+            const content = document.getElementById('menu-content');
+
+            nav.innerHTML = course.sections.map(s =>
+                `<button class="section-link" data-section="${s.id}" onclick="jumpToSection('${s.id}')">${esc(s.name)}</button>`
+            ).join('') + `<button class="section-link" data-section="${course.drinks.id}" onclick="jumpToSection('${course.drinks.id}')">${esc(course.drinks.name)}</button>`;
+
+            let html = '';
+            course.sections.forEach(section => {
+                html += `<section class="menu-section" id="sec-${section.id}">
+                    <div class="menu-section-head">
+                        <h2>${esc(section.name)}</h2>
+                        <span>${esc(section.note || '')}</span>
+                    </div>`;
+
+                if (section.featured) {
+                    const withImg = allItems(section).filter(i => i.img);
+                    const withoutImg = allItems(section).filter(i => !i.img);
+                    if (withImg.length) html += `<div class="product-grid">${withImg.map(itemCardHTML).join('')}</div>`;
+                    if (withoutImg.length) html += `<div class="menu-list" style="margin-top:40px;">${withoutImg.map(itemRowHTML).join('')}</div>`;
+                } else if (section.groups) {
+                    html += `<div class="menu-list">`;
+                    section.groups.forEach(g => {
+                        html += `<div class="sub-group-label">${esc(g.label)}</div>`;
+                        html += g.items.map(itemRowHTML).join('');
+                    });
+                    html += `</div>`;
+                } else {
+                    html += `<div class="menu-list">${section.items.map(itemRowHTML).join('')}</div>`;
+                }
+                html += `</section>`;
+            });
+
+            // Drinks — display only
+            const d = course.drinks;
+            html += `<section class="menu-section" id="sec-${d.id}">
+                <div class="menu-section-head">
+                    <h2>${esc(d.name)}</h2>
+                    <span>Served all day</span>
+                </div>
+                <div class="drinks-grid">
+                    ${d.groups.map(g => `
+                        <div class="drink-group">
+                            <h4>${esc(g.name)}</h4>
+                            <ul>${g.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>
+                        </div>`).join('')}
+                </div>
+                <div class="drinks-note">Drinks are served fresh to order. Ask our team for today's prices and seasonal specials — or add them to your order when you message us on WhatsApp.</div>
+            </section>`;
+
+            content.innerHTML = html;
+            observeReveals();
+        }
+
+        function showCourse(course) {
+            currentCourse = course;
+            document.querySelectorAll('.course-tab').forEach(t => t.classList.toggle('active', t.dataset.course === course));
+            renderMenu();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function jumpToSection(id) {
+            const el = document.getElementById('sec-' + id);
+            if (!el) return;
+            const offset = window.innerWidth <= 900 ? 120 : 140;
+            window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+        }
+
+        function renderFeatured() {
+            const picks = MENU.breakfast.sections[0].items.slice(0, 4);
+            document.getElementById('featured-grid').innerHTML = picks.map(itemCardHTML).join('');
+        }
+
+        /* =========================================================
+           MEAL BUILDER
+           ========================================================= */
+        let currentBuilder = 'breakfast';
+        let selections = {};
+
+        function renderBuilderModes() {
+            document.getElementById('builder-modes').innerHTML = Object.entries(BUILDERS).map(([key, b]) => `
+                <button class="mode-card ${key === currentBuilder ? 'active' : ''}" data-mode="${key}" onclick="setBuilder('${key}')">
+                    <h3>${esc(b.title)}</h3>
+                    <div class="mode-sub">${esc(b.sub)}</div>
+                </button>`).join('');
+        }
+
+        function setBuilder(key) {
+            currentBuilder = key;
+            selections = {};
+            renderBuilderModes();
+            renderBuilderSteps();
+            updateBuildSummary();
+        }
+
+        function renderBuilderSteps() {
+            const b = BUILDERS[currentBuilder];
+            document.getElementById('builder-steps').innerHTML = b.steps.map((step, i) => `
+                <div class="builder-step">
+                    <div class="builder-step-head">
+                        <span class="step-num">${i + 1}</span>
+                        <h3>${esc(step.label)}</h3>
+                        <span class="step-hint">${step.type === 'single' ? (step.required ? 'Pick one • required' : 'Pick one') : (step.required ? 'Pick any • required' : 'Optional')}</span>
+                    </div>
+                    <div class="option-grid">
+                        ${step.options.map(opt => {
+                            const sel = isSelected(step, opt.name);
+                            return `<button class="option ${sel ? 'selected' : ''}" onclick="toggleOption('${step.id}', '${esc(opt.name).replace(/'/g, "\\'")}', ${opt.price}, '${step.type}')">
+                                <span class="option-name">${esc(opt.name)}</span>
+                                <span class="option-price">${opt.price ? '+' + naira(opt.price) : '—'}</span>
+                            </button>`;
+                        }).join('')}
+                    </div>
+                </div>`).join('');
+        }
+
+        function isSelected(step, name) {
+            const s = selections[step.id];
+            if (!s) return false;
+            return step.type === 'single' ? s.name === name : s.some(x => x.name === name);
+        }
+
+        function toggleOption(stepId, name, price, type) {
+            if (type === 'single') {
+                selections[stepId] = (selections[stepId] && selections[stepId].name === name) ? null : { name, price };
+                if (!selections[stepId]) delete selections[stepId];
+            } else {
+                const list = selections[stepId] || [];
+                const idx = list.findIndex(x => x.name === name);
+                if (idx > -1) list.splice(idx, 1); else list.push({ name, price });
+                if (list.length) selections[stepId] = list; else delete selections[stepId];
+            }
+            renderBuilderSteps();
+            updateBuildSummary();
+        }
+
+        function buildSelectionList() {
+            const b = BUILDERS[currentBuilder];
+            const out = [];
+            b.steps.forEach(step => {
+                const s = selections[step.id];
+                if (!s) return;
+                if (step.type === 'single') out.push(s);
+                else s.forEach(x => out.push(x));
+            });
+            return out;
+        }
+
+        function buildTotal() {
+            return buildSelectionList().reduce((sum, x) => sum + x.price, 0);
+        }
+
+        function buildIsValid() {
+            return BUILDERS[currentBuilder].steps.every(step => !step.required || selections[step.id]);
+        }
+
+        function updateBuildSummary() {
+            const b = BUILDERS[currentBuilder];
+            const list = buildSelectionList();
+            const total = buildTotal();
+            document.getElementById('bs-title').textContent = b.label;
+            document.getElementById('bs-total').textContent = naira(total);
+
+            const missing = b.steps.filter(s => s.required && !selections[s.id]);
+            document.getElementById('bs-sub').textContent = missing.length
+                ? 'Still needed: ' + missing.map(s => s.label.replace(/^(Choose|Pick)\s(Your\s|A\s)?/i, '')).join(', ')
+                : 'Looking good — ready to add.';
+
+            document.getElementById('bs-list').innerHTML = list.length
+                ? list.map(x => `<li><span>${esc(x.name)}</span><span>${x.price ? naira(x.price) : '—'}</span></li>`).join('')
+                : `<div class="bs-empty">Nothing picked yet. Start with the first step and your plate will appear here.</div>`;
+
+            document.getElementById('bs-add').disabled = !buildIsValid() || total === 0;
+        }
+
+        function resetBuilder() {
+            selections = {};
+            renderBuilderSteps();
+            updateBuildSummary();
+        }
+
+        function addBuildToCart() {
+            if (!buildIsValid()) return;
+            const b = BUILDERS[currentBuilder];
+            const list = buildSelectionList();
+            const detail = list.map(x => x.name).join(', ');
+            cart.push({
+                id: 'custom-' + Date.now(),
+                name: b.label,
+                price: buildTotal(),
+                qty: 1,
+                detail
+            });
+            saveCart();
+            updateCartUI();
+            showToast(b.label + ' added to your order');
+            resetBuilder();
+        }
+
+        /* =========================================================
+           CART
+           ========================================================= */
+        function loadCart() {
+            try {
+                const saved = localStorage.getItem('rereandco_cart');
+                const parsed = saved ? JSON.parse(saved) : [];
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) { return []; }
+        }
+
+        function saveCart() {
+            try { localStorage.setItem('rereandco_cart', JSON.stringify(cart)); } catch (e) {}
+        }
+
+        let cart = loadCart();
+
+        function toggleCart() {
+            document.getElementById('cart-panel').classList.toggle('active');
+            document.getElementById('cart-overlay').classList.toggle('active');
+        }
+
+        function addToCart(itemName, price, event) {
+            const existing = cart.find(i => i.name === itemName && !i.detail);
+            if (existing) existing.qty += 1;
+            else cart.push({ id: itemName, name: itemName, price, qty: 1 });
+            saveCart();
+            updateCartUI();
+            showToast(itemName + ' added to your order');
+            if (event && event.currentTarget) {
+                const btn = event.currentTarget;
+                btn.style.transform = 'scale(0.9)';
+                setTimeout(() => btn.style.transform = '', 180);
+            }
+        }
+
+        function changeQty(index, delta) {
+            const item = cart[index];
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) cart.splice(index, 1);
+            saveCart();
+            updateCartUI();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveCart();
+            updateCartUI();
+        }
+
+        function clearCart() {
+            if (!cart.length) return;
+            cart = [];
+            saveCart();
+            updateCartUI();
+            showToast('Order cleared');
+        }
+
+        function cartTotal() {
+            return cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const badge = document.getElementById('cart-count-badge');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            const count = cart.reduce((n, i) => n + i.qty, 0);
+
+            badge.innerText = count;
+            checkoutBtn.disabled = cart.length === 0;
+
+            if (!cart.length) {
+                container.innerHTML = `<div class="cart-empty">Your order is beautifully empty.<br>Add something from the menu — or build your own plate.</div>`;
+            } else {
+                container.innerHTML = cart.map((item, i) => `
+                    <div class="cart-item">
+                        <div class="cart-item-top">
+                            <div style="flex:1; min-width:0;">
+                                <h4>${esc(item.name)}</h4>
+                                ${item.detail ? `<div class="cart-item-detail">${esc(item.detail)}</div>` : ''}
+                                <div class="cart-item-math">${naira(item.price)} × ${item.qty} = ${naira(item.price * item.qty)}</div>
+                            </div>
+                            <div class="qty-controls">
+                                <button class="qty-btn" onclick="changeQty(${i}, -1)" aria-label="Decrease quantity">−</button>
+                                <span class="qty-num">${item.qty}</span>
+                                <button class="qty-btn" onclick="changeQty(${i}, 1)" aria-label="Increase quantity">+</button>
+                                <button class="remove-item" onclick="removeFromCart(${i})" aria-label="Remove item">🗑</button>
+                            </div>
+                        </div>
+                    </div>`).join('');
+            }
+
+            const total = cartTotal();
+            document.getElementById('cart-subtotal').innerText = naira(total);
+            document.getElementById('cart-total-price').innerText = naira(total);
+        }
+
+        /* =========================================================
+           PAYMENT FLOW
+           ========================================================= */
+        function openPayment() {
+            if (!cart.length) return;
+            renderPaymentStep();
+            document.getElementById('pay-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePayment() {
+            document.getElementById('pay-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function renderPaymentStep() {
+            const total = cartTotal();
+            document.getElementById('pay-title').textContent = 'Complete Your Payment';
+            document.getElementById('pay-body').innerHTML = `
+                <p class="pay-intro">Please transfer the exact amount below to any one of our accounts, then tap “I've made payment” to send us your order on WhatsApp.</p>
+                <div class="pay-total-box">
+                    <div class="label">Total To Pay</div>
+                    <div class="amount">${naira(total)}</div>
+                </div>
+                ${BANKS.map((b, i) => `
+                    <div class="bank-card">
+                        <div class="idx">Account ${i + 1}</div>
+                        <div class="bank-name">${esc(b.bank)}</div>
+                        <div class="field-label">Account Name</div>
+                        <div class="acct-name">${esc(b.name)}</div>
+                        <div class="field-label">Account Number</div>
+                        <div class="acct-num">${esc(b.number)}</div>
+                        <button class="copy-btn" onclick="copyAccount('${b.number}', this)">Copy Account Number</button>
+                    </div>`).join('')}
+                <div class="pay-field">
+                    <label for="pay-bank">Bank you transferred from (optional)</label>
+                    <input id="pay-bank" type="text" placeholder="e.g. GTBank" autocomplete="off">
+                </div>
+                <div class="pay-disclaimer">
+                    Tapping “I've made payment” does not verify your transfer. Our team will confirm your payment and check availability on WhatsApp before your order is accepted.
+                </div>`;
+
+            document.getElementById('pay-foot').innerHTML = `
+                <button class="btn-gold" onclick="confirmPayment()">I've Made Payment</button>
+                <button class="btn-text" onclick="closePayment()">Back To Order</button>`;
+        }
+
+        function copyAccount(number, btn) {
+            const done = () => {
+                const original = btn.textContent;
+                btn.textContent = 'Copied ✓';
+                btn.classList.add('copied');
+                setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1800);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(number).then(done).catch(() => fallbackCopy(number, done));
+            } else {
+                fallbackCopy(number, done);
+            }
+        }
+
+        function fallbackCopy(text, done) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) {}
+            document.body.removeChild(ta);
+        }
+
+        function buildWhatsAppMessage() {
+            const bankInput = document.getElementById('pay-bank');
+            const fromBank = bankInput && bankInput.value.trim();
+            let msg = 'Hello Rereandco! I would like to place an order:\n\n';
+            cart.forEach(item => {
+                msg += `• ${item.name} × ${item.qty} — ${naira(item.price * item.qty)}\n`;
+                if (item.detail) msg += `   (${item.detail})\n`;
+            });
+            msg += `\nTotal: ${naira(cartTotal())}\n\n`;
+            msg += `I have made payment by bank transfer${fromBank ? ' from ' + fromBank : ''}.\n`;
+            msg += 'Please confirm my payment and the availability of these items. Thank you!';
+            return msg;
+        }
+
+        function confirmPayment() {
+            const message = buildWhatsAppMessage();
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+
+            document.getElementById('pay-title').textContent = 'Order Sent';
+            document.getElementById('pay-body').innerHTML = `
+                <div class="pay-success">
+                    <div class="tick">✓</div>
+                    <h3>Thank you!</h3>
+                    <p>Your order details have been sent to our team on WhatsApp. We'll confirm your payment and availability shortly.<br><br>If WhatsApp didn't open, message us on <strong>0916 672 9573</strong>.</p>
+                </div>`;
+            document.getElementById('pay-foot').innerHTML = `
+                <button class="btn-gold" onclick="finishOrder()">Start A New Order</button>
+                <button class="btn-text" onclick="closePayment()">Close</button>`;
+        }
+
+        function finishOrder() {
+            cart = [];
+            saveCart();
+            updateCartUI();
+            closePayment();
+            document.getElementById('cart-panel').classList.remove('active');
+            document.getElementById('cart-overlay').classList.remove('active');
+            showToast('Ready for your next order');
+        }
+
+        /* =========================================================
+           PAGE ROUTING
+           ========================================================= */
+        const VALID_PAGES = ['home', 'menu', 'create', 'story'];
 
         function showPage(pageId, updateHash = true) {
             if (!VALID_PAGES.includes(pageId)) pageId = 'home';
@@ -558,25 +1388,40 @@
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.page === pageId));
             if (updateHash) history.pushState({ page: pageId }, '', '#' + pageId);
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            observeReveals();
         }
 
         window.addEventListener('popstate', (e) => {
-            const pageId = (e.state && e.state.page) || 'home';
-            showPage(pageId, false);
+            showPage((e.state && e.state.page) || 'home', false);
         });
 
-        // Mobile Nav Toggle
         function toggleMobileNav() {
-            document.getElementById('nav-toggle').classList.toggle('active');
-            document.getElementById('mobile-nav').classList.toggle('active');
+            const toggle = document.getElementById('nav-toggle');
+            const open = !toggle.classList.contains('active');
+            toggle.classList.toggle('active', open);
+            toggle.setAttribute('aria-expanded', String(open));
+            document.getElementById('mobile-nav').classList.toggle('active', open);
         }
 
-        // Shrink header on scroll
         window.addEventListener('scroll', () => {
             document.getElementById('site-header').classList.toggle('scrolled', window.scrollY > 20);
+            highlightSection();
         });
 
-        // Testimonial Carousel Logic
+        function highlightSection() {
+            if (!document.getElementById('page-menu').classList.contains('active')) return;
+            const sections = document.querySelectorAll('.menu-section');
+            let current = null;
+            sections.forEach(s => {
+                if (s.getBoundingClientRect().top <= 200) current = s.id.replace('sec-', '');
+            });
+            document.querySelectorAll('.section-link').forEach(l =>
+                l.classList.toggle('active', l.dataset.section === current));
+        }
+
+        /* =========================================================
+           TESTIMONIALS / FAQ / REVEALS
+           ========================================================= */
         const testimonials = [
             { name: "Chidinma O.", quote: "\"Pure perfection in every bite. You can really taste the handcrafted quality and the passion behind their baking.\"" },
             { name: "Olumide A.", quote: "\"The Seafood Fried Rice took me to another realm! The flavors are incredibly rich. Best brunch spot in PH, hands down.\"" },
@@ -604,136 +1449,51 @@
             updateTestimonial();
         }
 
-        // FAQ Toggle Logic
         function toggleFAQ(button) {
             const item = button.closest('.faq-item');
             item.classList.toggle('active');
             const icon = button.querySelector('.faq-icon');
-            if (item.classList.contains('active')) {
-                icon.textContent = '×';
-                icon.style.transform = 'rotate(90deg)';
-            } else {
-                icon.textContent = '+';
-                icon.style.transform = 'rotate(0deg)';
-            }
+            const open = item.classList.contains('active');
+            icon.textContent = open ? '×' : '+';
+            icon.style.transform = open ? 'rotate(90deg)' : 'rotate(0deg)';
         }
 
-        // Menu Filtering Logic
-        function filterMenu(category, event) {
-            document.querySelectorAll('.menu-tab').forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            const items = document.querySelectorAll('.menu-item-card[data-category]');
-            items.forEach(item => {
-                if (category === 'all' || item.dataset.category === category) {
-                    item.style.display = 'block';
-                    setTimeout(() => item.style.opacity = '1', 50);
-                } else {
-                    item.style.opacity = '0';
-                    setTimeout(() => item.style.display = 'none', 300);
-                }
-            });
-        }
-
-        // Cart State & Logic
-        function loadCart() {
-            try {
-                const saved = localStorage.getItem('rereandco_cart');
-                return saved ? JSON.parse(saved) : [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function saveCart() {
-            try {
-                localStorage.setItem('rereandco_cart', JSON.stringify(cart));
-            } catch (e) {}
-        }
-
-        let cart = loadCart();
-
-        function toggleCart() {
-            document.getElementById('cart-panel').classList.toggle('active');
-            document.getElementById('cart-overlay').classList.toggle('active');
-        }
-
-        function addToCart(itemName, price, event) {
-            cart.push({ name: itemName, price: price });
-            saveCart();
-            updateCartUI();
-
-            const btn = event.currentTarget;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = 'Added ✓';
-            setTimeout(() => btn.innerHTML = originalText, 1000);
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            saveCart();
-            updateCartUI();
-        }
-
-        function updateCartUI() {
-            const container = document.getElementById('cart-items-container');
-            const totalEl = document.getElementById('cart-total-price');
-            const badge = document.getElementById('cart-count-badge');
-            const checkoutBtn = document.querySelector('.checkout-btn');
-
-            badge.innerText = cart.length;
-            checkoutBtn.disabled = cart.length === 0;
-
-            if (cart.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#999; margin-top: 50px; font-size: 14px;">Your cart is beautifully empty.</p>';
-                totalEl.innerText = '₦0';
+        let revealObserver;
+        function observeReveals() {
+            if (!('IntersectionObserver' in window)) {
+                document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
                 return;
             }
-
-            let html = '';
-            let total = 0;
-
-            cart.forEach((item, index) => {
-                html += `
-                <div class="cart-item">
-                    <div class="cart-item-info">
-                        <h4>${item.name}</h4>
-                        <p style="color: var(--dark); font-size: 13px; margin-top: 4px;">₦${item.price.toLocaleString()}</p>
-                    </div>
-                    <button class="remove-item" onclick="removeFromCart(${index})">Remove</button>
-                </div>`;
-                total += item.price;
-            });
-
-            container.innerHTML = html;
-            totalEl.innerText = '₦' + total.toLocaleString();
-        }
-
-        function checkoutToWhatsApp() {
-            if (cart.length === 0) {
-                alert("Please add items to your cart before checking out.");
-                return;
+            if (!revealObserver) {
+                revealObserver = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('in-view');
+                            revealObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.12 });
             }
-
-            let message = "Hello Rereandco! I would like to place an order:%0A%0A";
-            let total = 0;
-
-            cart.forEach(item => {
-                message += `- ${item.name} (₦${item.price.toLocaleString()})%0A`;
-                total += item.price;
-            });
-
-            message += `%0A*Total: ₦${total.toLocaleString()}*%0A%0APlease let me know the next steps for delivery/pickup!`;
-
-            const whatsappNumber = "2349166729573"; 
-            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
-            
-            window.open(whatsappUrl, '_blank');
+            document.querySelectorAll('.reveal:not(.in-view)').forEach(el => revealObserver.observe(el));
         }
 
-        // Initial Load: restore cart UI, route to the URL's page, and set active nav state
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Escape') return;
+            if (document.getElementById('pay-overlay').classList.contains('active')) closePayment();
+            else if (document.getElementById('cart-panel').classList.contains('active')) toggleCart();
+        });
+
+        /* =========================================================
+           INIT
+           ========================================================= */
+        renderFeatured();
+        renderMenu();
+        renderBuilderModes();
+        renderBuilderSteps();
+        updateBuildSummary();
         updateCartUI();
         showPage((location.hash || '#home').slice(1), false);
+        observeReveals();
     </script>
 </body>
 </html>
