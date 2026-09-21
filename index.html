@@ -87,8 +87,9 @@
             background-image: linear-gradient(to bottom, rgba(27,43,36,0.52) 0%, rgba(27,43,36,0.26) 42%, rgba(27,43,36,0.82) 100%), url('hero-breakfast-board.webp');
             background-size: cover; background-position: center; margin: 20px; border-radius: 20px; overflow: hidden;
         }
-        .hero-top-text { display: flex; gap: 25px; margin-bottom: auto; margin-top: 25vh; }
-        .hero-top-text span { font-family: var(--font-serif); font-size: 6vw; font-weight: 400; color: white; line-height: 1; }
+        /* Matches the page-hero headings on Menu / Build / Our Story */
+        .hero-title { font-family: var(--font-serif); font-size: clamp(2.4rem, 9vw, 4.5rem); font-style: italic; font-weight: 400; color: #fff; line-height: 1.08; margin-bottom: auto; margin-top: 25vh; }
+        .hero-break { display: none; }
 
         .hero-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; }
         .hero-bottom p { color: white; max-width: 380px; font-size: 14px; font-weight: 300; line-height: 1.6; opacity: 0.9; text-align: left; }
@@ -182,12 +183,18 @@
         .builder-step h3 { font-size: 1.4rem; font-style: italic; }
         .step-hint { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); }
         .option-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 12px; }
-        .option { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 15px 18px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.5); cursor: pointer; transition: 0.22s; text-align: left; font: inherit; color: inherit; }
+        .option { border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.5); transition: 0.22s; overflow: hidden; }
         .option:hover { border-color: var(--green); }
         .option.selected { background: var(--green-deep); border-color: var(--green-deep); color: var(--cream); }
+        .option-pick { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 15px 18px; background: none; border: none; cursor: pointer; text-align: left; font: inherit; color: inherit; }
         .option-name { font-size: 14px; }
         .option-price { font-size: 12px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
         .option.selected .option-price { color: var(--gold-light); }
+        .option-qty { display: flex; align-items: center; gap: 9px; padding: 0 14px 14px; }
+        .oq-label { font-size: 9.5px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(243,233,223,0.55); margin-right: auto; }
+        .oq-btn { width: 27px; height: 27px; border-radius: 6px; border: 1px solid var(--border-light); background: transparent; color: var(--cream); cursor: pointer; font-size: 14px; line-height: 1; transition: 0.2s; }
+        .oq-btn:hover { border-color: var(--gold); color: var(--gold); }
+        .oq-num { min-width: 20px; text-align: center; font-size: 13px; font-variant-numeric: tabular-nums; }
 
         .builder-summary { position: sticky; top: 110px; background: var(--green-deep); color: var(--cream); border-radius: 18px; padding: 30px; }
         .builder-summary h3 { font-size: 1.5rem; font-style: italic; margin-bottom: 6px; }
@@ -227,7 +234,8 @@
         .testi-card-inner .name { font-family: var(--font-serif); font-size: 1.5rem; font-style: italic; text-decoration: underline; text-underline-offset: 4px; margin-bottom: 20px; }
         .testi-card-inner .quote { font-size: 14px; line-height: 1.6; margin-bottom: 30px; font-weight: 500;}
         .testi-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted); }
-        .stars { color: var(--dark); font-size: 10px; letter-spacing: 2px;}
+        .stars { color: var(--gold-ink); font-size: 10px; letter-spacing: 2px;}
+        .rating-num { font-family: var(--font-sans); color: var(--dark); letter-spacing: 0; font-size: 12px; }
         .paperclip { position: absolute; top: -20px; right: 40px; width: 15px; height: 50px; border: 2px solid var(--sage); border-radius: 10px; background: transparent; border-bottom: none; transform: rotate(15deg); }
         .paperclip::after { content: ''; position: absolute; top: 5px; left: 2px; width: 7px; height: 35px; border: 2px solid var(--sage); border-radius: 10px; border-top: none; }
 
@@ -345,8 +353,8 @@
             .brand-container { min-width: 0; gap: 9px; }
             .logo-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             .hero { height: 78vh; padding: 0 24px; }
-            .hero-top-text { flex-direction: column; align-items: flex-start; gap: 0; margin-top: 15vh; }
-            .hero-top-text span { font-size: 12vw; }
+            .hero-title { margin-top: 15vh; }
+            .hero-break { display: block; }
             .hero-bottom { flex-direction: column; align-items: flex-start; gap: 30px; margin-bottom: 30px; }
             .circle-layout { flex-direction: column; }
             .circle-1, .circle-3 { display: none; }
@@ -414,10 +422,7 @@
     <!-- ================= HOME PAGE ================= -->
     <div id="page-home" class="page active">
         <section class="hero">
-            <div class="hero-top-text">
-                <span>Baked</span>
-                <span><i>with</i> Love</span>
-            </div>
+            <h1 class="hero-title">Baked <br class="hero-break">with Love</h1>
             <div class="hero-bottom">
                 <p>Freshly baked treats with a golden, flaky texture and rich buttery flavor crafted with care to make every moment feel special.</p>
                 <div class="hero-actions">
@@ -470,8 +475,8 @@
                         <div class="name" id="t-name">Chidinma O.</div>
                         <div class="quote" id="t-quote">"Pure perfection in every bite. You can really taste the handcrafted quality and the passion behind their baking."</div>
                         <div class="testi-meta">
-                            <span class="stars">★★★★★ <span style="font-family: var(--font-sans);">4.9</span></span>
-                            <span>10/09/2026</span>
+                            <span class="stars" id="t-stars">★★★★★ <span class="rating-num" id="t-rating">5.0</span></span>
+                            <span id="t-date">06/09/2026</span>
                         </div>
                     </div>
                 </div>
@@ -482,7 +487,7 @@
         <section class="container section-padding faq-container">
             <span class="section-label">F A Q</span>
             <div class="grid-header" style="margin-bottom: 40px;">
-                <h2>Curious About Our Bakes?</h2>
+                <h2>Curious About Our Service?</h2>
             </div>
 
             <div class="faq-item">
@@ -720,9 +725,9 @@
                         id: 'burgers', name: 'Burgers', note: 'Stacked & seasoned',
                         featured: true,
                         items: [
-                            { name: 'Rereandco Signature Burger', desc: 'Double beef patties, double cheese, caramelised onions, crispy bacon & signature sauce.', price: 11000, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80' },
+                            { name: 'Rereandco Signature Burger', desc: 'Double beef patties, double cheese, caramelised onions, crispy bacon & signature sauce.', price: 11000 },
                             { name: 'Breakfast Burger', desc: 'Beef/chicken patty, fried egg, cheese, crispy bacon, lettuce & house sauce.', price: 9500 },
-                            { name: 'Classic Beef Burger', desc: 'Seasoned beef patty, cheese, lettuce, tomatoes, caramelised onions & house sauce.', price: 9000, img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80' },
+                            { name: 'Classic Beef Burger', desc: 'Seasoned beef patty, cheese, lettuce, tomatoes, caramelised onions & house sauce.', price: 9000 },
                             { name: 'Regular Burger', desc: 'Beef/chicken patty, lettuce, cheese, tomatoes & house sauce.', price: null }
                         ]
                     },
@@ -891,7 +896,7 @@
                 sub: 'Build a platter for the table.',
                 label: 'Your Sharing Platter',
                 steps: [
-                    { id: 'size', label: 'Who Is It For?', type: 'single', required: true, options: [
+                    { id: 'size', label: 'Who Is It For?', type: 'single', required: true, noQty: true, options: [
                         { name: 'For 2', price: 0 }, { name: 'For 4', price: 0 }, { name: 'For 6+', price: 0 }
                     ]},
                     { id: 'proteins', label: 'Pick Your Proteins', type: 'multi', required: true, options: [
@@ -1121,33 +1126,65 @@
                         <span class="step-hint">${step.type === 'single' ? (step.required ? 'Pick one • required' : 'Pick one') : (step.required ? 'Pick any • required' : 'Optional')}</span>
                     </div>
                     <div class="option-grid">
-                        ${step.options.map(opt => {
-                            const sel = isSelected(step, opt.name);
-                            return `<button class="option ${sel ? 'selected' : ''}" onclick="toggleOption('${step.id}', '${esc(opt.name).replace(/'/g, "\\'")}', ${opt.price}, '${step.type}')">
-                                <span class="option-name">${esc(opt.name)}</span>
-                                <span class="option-price">${opt.price ? '+' + naira(opt.price) : '—'}</span>
-                            </button>`;
+                        ${step.options.map((opt, optIndex) => {
+                            const sel = getSelection(step, opt.name);
+                            const showQty = sel && !step.noQty;
+                            return `<div class="option ${sel ? 'selected' : ''}">
+                                <button class="option-pick" onclick="toggleOption('${step.id}', ${optIndex})">
+                                    <span class="option-name">${esc(opt.name)}</span>
+                                    <span class="option-price">${opt.price ? '+' + naira(opt.price) : '—'}</span>
+                                </button>
+                                ${showQty ? `<div class="option-qty">
+                                    <span class="oq-label">Servings</span>
+                                    <button class="oq-btn" onclick="changeOptionQty('${step.id}', ${optIndex}, -1)" aria-label="Fewer servings of ${esc(opt.name)}">−</button>
+                                    <span class="oq-num">${sel.qty}</span>
+                                    <button class="oq-btn" onclick="changeOptionQty('${step.id}', ${optIndex}, 1)" aria-label="More servings of ${esc(opt.name)}">+</button>
+                                </div>` : ''}
+                            </div>`;
                         }).join('')}
                     </div>
                 </div>`).join('');
         }
 
-        function isSelected(step, name) {
-            const s = selections[step.id];
-            if (!s) return false;
-            return step.type === 'single' ? s.name === name : s.some(x => x.name === name);
+        function findStep(stepId) {
+            return BUILDERS[currentBuilder].steps.find(s => s.id === stepId);
         }
 
-        function toggleOption(stepId, name, price, type) {
-            if (type === 'single') {
-                selections[stepId] = (selections[stepId] && selections[stepId].name === name) ? null : { name, price };
-                if (!selections[stepId]) delete selections[stepId];
+        function getSelection(step, name) {
+            const s = selections[step.id];
+            if (!s) return null;
+            if (step.type === 'single') return s.name === name ? s : null;
+            return s.find(x => x.name === name) || null;
+        }
+
+        function toggleOption(stepId, optIndex) {
+            const step = findStep(stepId);
+            const opt = step.options[optIndex];
+            if (step.type === 'single') {
+                const cur = selections[stepId];
+                if (cur && cur.name === opt.name) delete selections[stepId];
+                else selections[stepId] = { name: opt.name, price: opt.price, qty: 1 };
             } else {
                 const list = selections[stepId] || [];
-                const idx = list.findIndex(x => x.name === name);
-                if (idx > -1) list.splice(idx, 1); else list.push({ name, price });
+                const idx = list.findIndex(x => x.name === opt.name);
+                if (idx > -1) list.splice(idx, 1);
+                else list.push({ name: opt.name, price: opt.price, qty: 1 });
                 if (list.length) selections[stepId] = list; else delete selections[stepId];
             }
+            renderBuilderSteps();
+            updateBuildSummary();
+        }
+
+        function changeOptionQty(stepId, optIndex, delta) {
+            const step = findStep(stepId);
+            const opt = step.options[optIndex];
+            const sel = getSelection(step, opt.name);
+            if (!sel) return;
+            if (sel.qty + delta < 1) {
+                toggleOption(stepId, optIndex);
+                return;
+            }
+            sel.qty += delta;
             renderBuilderSteps();
             updateBuildSummary();
         }
@@ -1165,7 +1202,7 @@
         }
 
         function buildTotal() {
-            return buildSelectionList().reduce((sum, x) => sum + x.price, 0);
+            return buildSelectionList().reduce((sum, x) => sum + x.price * x.qty, 0);
         }
 
         function buildIsValid() {
@@ -1185,7 +1222,7 @@
                 : 'Looking good — ready to add.';
 
             document.getElementById('bs-list').innerHTML = list.length
-                ? list.map(x => `<li><span>${esc(x.name)}</span><span>${x.price ? naira(x.price) : '—'}</span></li>`).join('')
+                ? list.map(x => `<li><span>${esc(x.name)}${x.qty > 1 ? ' × ' + x.qty : ''}</span><span>${x.price ? naira(x.price * x.qty) : '—'}</span></li>`).join('')
                 : `<div class="bs-empty">Nothing picked yet. Start with the first step and your plate will appear here.</div>`;
 
             document.getElementById('bs-add').disabled = !buildIsValid() || total === 0;
@@ -1201,7 +1238,7 @@
             if (!buildIsValid()) return;
             const b = BUILDERS[currentBuilder];
             const list = buildSelectionList();
-            const detail = list.map(x => x.name).join(', ');
+            const detail = list.map(x => x.qty > 1 ? `${x.name} × ${x.qty}` : x.name).join(', ');
             cart.push({
                 id: 'custom-' + Date.now(),
                 name: b.label,
@@ -1472,18 +1509,32 @@
            TESTIMONIALS / FAQ / REVEALS
            ========================================================= */
         const testimonials = [
-            { name: "Chidinma O.", quote: "\"Pure perfection in every bite. You can really taste the handcrafted quality and the passion behind their baking.\"" },
-            { name: "Olumide A.", quote: "\"The Seafood Fried Rice took me to another realm! The flavors are incredibly rich. Best brunch spot in PH, hands down.\"" },
-            { name: "Amina S.", quote: "\"My absolute go-to for weekend mornings. The Rereandco Platter is massive, fresh, and the aesthetic vibes are unmatched.\"" }
+            { name: "Chidinma O.", rating: 5.0, date: "06/09/2026",
+              quote: "\"Pure perfection in every bite. You can really taste the handcrafted quality and the passion behind their baking.\"" },
+            { name: "Olumide A.", rating: 4.3, date: "22/07/2026",
+              quote: "\"The Chicken & Waffle is worth the trip on its own. Service was a little slow on a busy Saturday, but the food more than made up for it.\"" },
+            { name: "Amina S.", rating: 4.6, date: "14/08/2026",
+              quote: "\"My absolute go-to for weekend mornings. The Rereandco Platter is massive, fresh, and the aesthetic vibes are unmatched.\"" },
+            { name: "Tamuno B.", rating: 4.8, date: "29/05/2026",
+              quote: "\"Ordered the Breakfast Board for two and it fed three of us comfortably. Everything arrived hot and beautifully packaged.\"" }
         ];
         let currentTesti = 0;
 
+        function starsFor(rating) {
+            const filled = Math.round(rating);
+            return '★'.repeat(filled) + '☆'.repeat(Math.max(0, 5 - filled));
+        }
+
         function updateTestimonial() {
             const card = document.getElementById('testi-card');
+            const t = testimonials[currentTesti];
             card.style.opacity = '0';
             setTimeout(() => {
-                document.getElementById('t-name').innerText = testimonials[currentTesti].name;
-                document.getElementById('t-quote').innerText = testimonials[currentTesti].quote;
+                document.getElementById('t-name').innerText = t.name;
+                document.getElementById('t-quote').innerText = t.quote;
+                document.getElementById('t-date').innerText = t.date;
+                document.getElementById('t-rating').innerText = t.rating.toFixed(1);
+                document.getElementById('t-stars').firstChild.nodeValue = starsFor(t.rating) + ' ';
                 card.style.opacity = '1';
             }, 300);
         }
