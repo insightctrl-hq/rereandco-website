@@ -161,7 +161,12 @@
         .drinks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 36px 40px; }
         .drink-group h4 { font-family: var(--font-sans); font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px; color: var(--gold-ink); margin-bottom: 14px; }
         .drink-group ul { list-style: none; }
-        .drink-group li { font-size: 14px; color: var(--muted); padding: 7px 0; border-bottom: 1px dashed var(--border); }
+        .drink-group li { font-size: 14px; color: var(--muted); padding: 7px 0; border-bottom: 1px dashed var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .drink-group .d-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .drink-group .d-price { font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .drink-group .d-price.ask { text-transform: uppercase; letter-spacing: 1px; font-size: 10px; }
+        .drink-add { border: 1px solid var(--green-deep); background: transparent; color: var(--green-deep); width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 13px; line-height: 1; flex-shrink: 0; transition: 0.25s; }
+        .drink-add:hover { background: var(--green-deep); color: var(--cream); }
         .drinks-note { margin-top: 40px; padding: 22px 26px; background: rgba(66,94,85,0.07); border-left: 2px solid var(--green); border-radius: 4px; font-size: 13.5px; color: var(--muted); line-height: 1.7; }
 
         /* --- BUILDER PAGE --- */
@@ -492,11 +497,11 @@
 
             <div class="faq-item">
                 <button class="faq-question" onclick="toggleFAQ(this)">Do you offer delivery in Port Harcourt? <span class="faq-icon">+</span></button>
-                <div class="faq-answer">Yes, we deliver across the city. Simply add items to your order, proceed to payment, then send us your order on WhatsApp — let us know your location and our dispatch team will handle the rest.</div>
+                <div class="faq-answer">Yes, we deliver across the city. Simply add items to your order and send it to us on WhatsApp — let us know your delivery location and our dispatch team will handle the rest.</div>
             </div>
             <div class="faq-item">
                 <button class="faq-question" onclick="toggleFAQ(this)">How do I pay for my order? <span class="faq-icon">+</span></button>
-                <div class="faq-answer">We accept bank transfer. When you proceed to payment we'll show you our account details — transfer the exact total, tap "I've made payment", and your order details will be sent to us on WhatsApp so our team can confirm it.</div>
+                <div class="faq-answer">We accept bank transfer to First Bank, Access Bank or UBA. Send us your order on WhatsApp, and once our team has confirmed availability we'll reply with our account details so you can pay.</div>
             </div>
             <div class="faq-item">
                 <button class="faq-question" onclick="toggleFAQ(this)">Are your pastries baked fresh? <span class="faq-icon">+</span></button>
@@ -595,7 +600,7 @@
                 <span>Total</span>
                 <span id="cart-total-price">₦0</span>
             </div>
-            <button class="btn-gold" id="checkout-btn" onclick="openPayment()">Proceed To Payment</button>
+            <button class="btn-gold" id="checkout-btn" onclick="openCheckout()">Send Order On WhatsApp</button>
             <div class="cart-foot-links">
                 <button onclick="toggleCart()">Keep Browsing</button>
                 <button onclick="clearCart()">Clear Order</button>
@@ -603,12 +608,12 @@
         </div>
     </div>
 
-    <!-- ================= PAYMENT MODAL ================= -->
+    <!-- ================= CHECKOUT MODAL ================= -->
     <div class="pay-overlay" id="pay-overlay">
         <div class="pay-modal" role="dialog" aria-modal="true" aria-labelledby="pay-title">
             <div class="pay-head">
-                <h2 id="pay-title">Complete Your Payment</h2>
-                <button class="close-cart" onclick="closePayment()" aria-label="Close payment">&times;</button>
+                <h2 id="pay-title">Send Your Order</h2>
+                <button class="close-cart" onclick="closeCheckout()" aria-label="Close">&times;</button>
             </div>
             <div class="pay-body" id="pay-body"></div>
             <div class="pay-foot" id="pay-foot"></div>
@@ -657,9 +662,9 @@
                             { name: 'Classic Pancake Stack', desc: 'Four savory pancakes, butter & maple syrup.', price: 5000 },
                             { name: 'Berry Bliss Pancakes', desc: 'Pancakes, whipped cream, fresh fruit & berry sauce.', price: 8500 },
                             { name: 'Nutella Crunch Pancakes', desc: 'Pancakes, Nutella, banana, toasted nuts & whipped cream.', price: 9000 },
-                            { name: 'Chicken & Waffle', desc: 'Crispy fried chicken, Belgian waffle, maple syrup & spicy honey.', price: 12000 },
+                            { name: 'Chicken & Waffle', desc: 'Crispy fried chicken, Belgian waffle, maple syrup & spicy honey.', price: 12000, img: 'HHCW5456.jpg' },
                             { name: 'Loaded Waffle', desc: 'Belgian waffle, vanilla ice cream, fruits, whipped cream & chocolate sauce.', price: 9000 },
-                            { name: 'French Toast Royale', desc: 'Brioche french toast, caramelised bananas, whipped cream, berries & syrup.', price: 8500 }
+                            { name: 'French Toast Royale', desc: 'Brioche french toast, caramelised bananas, whipped cream, berries & syrup.', price: 8500, img: 'brioche-french-toast-10.jpg' }
                         ]
                     },
                     {
@@ -688,14 +693,31 @@
                 ],
                 drinks: {
                     id: 'bfast-drinks', name: 'Breakfast Drinks',
+                    // price: null shows "Ask staff" and hides the Add button — swap in the real price to make an item orderable
                     groups: [
-                        { name: 'Coffee', items: ['Espresso', 'Americano', 'Cappuccino', 'Latte', 'Mocha', 'Caramel Latte', 'Vanilla Latte'] },
-                        { name: 'Tea', items: ['English Breakfast Tea', 'Green Tea', 'Ginger & Lemon Tea', 'Chai Latte'] },
-                        { name: 'Signature Drinks', items: ['Rereandco Iced Latte', 'Strawberry Cream Latte', 'Caramel Cloud Coffee'] },
-                        { name: 'Fresh Juices', items: ['Fresh Orange Juice', 'Pineapple Ginger Juice', 'Mango Passion Juice'] },
-                        { name: 'Smoothies', items: ['Mango Passion Smoothie', 'Strawberry Banana Smoothie', 'Tropical Smoothie'] },
-                        { name: 'Milkshakes', items: ['Vanilla', 'Chocolate', 'Strawberry', 'Cookies & Cream'] },
-                        { name: 'Hot Beverages', items: ['Hot Chocolate'] }
+                        { name: 'Coffee', items: [
+                            { name: 'Espresso', price: null }, { name: 'Americano', price: null }, { name: 'Cappuccino', price: null },
+                            { name: 'Latte', price: null }, { name: 'Mocha', price: null }, { name: 'Caramel Latte', price: null }, { name: 'Vanilla Latte', price: null }
+                        ]},
+                        { name: 'Tea', items: [
+                            { name: 'English Breakfast Tea', price: null }, { name: 'Green Tea', price: null },
+                            { name: 'Ginger & Lemon Tea', price: null }, { name: 'Chai Latte', price: null }
+                        ]},
+                        { name: 'Signature Drinks', items: [
+                            { name: 'Rereandco Iced Latte', price: null }, { name: 'Strawberry Cream Latte', price: null }, { name: 'Caramel Cloud Coffee', price: null }
+                        ]},
+                        { name: 'Fresh Juices', items: [
+                            { name: 'Fresh Orange Juice', price: null }, { name: 'Pineapple Ginger Juice', price: null }, { name: 'Mango Passion Juice', price: null }
+                        ]},
+                        { name: 'Smoothies', items: [
+                            { name: 'Mango Passion Smoothie', price: null }, { name: 'Strawberry Banana Smoothie', price: null }, { name: 'Tropical Smoothie', price: null }
+                        ]},
+                        { name: 'Milkshakes', items: [
+                            { name: 'Vanilla', price: null }, { name: 'Chocolate', price: null }, { name: 'Strawberry', price: null }, { name: 'Cookies & Cream', price: null }
+                        ]},
+                        { name: 'Hot Beverages', items: [
+                            { name: 'Hot Chocolate', price: null }
+                        ]}
                     ]
                 }
             },
@@ -748,9 +770,18 @@
                 ],
                 drinks: {
                     id: 'brunch-drinks', name: 'Brunch Drinks & Cocktails',
+                    // price: null shows "Ask staff" and hides the Add button — swap in the real price to make an item orderable
                     groups: [
-                        { name: 'Refreshments & Coffee', items: ['Fresh Citrus Juice', 'Fresh Fruit Smoothie', 'Milkshake', 'Iced Coffee', 'Cappuccino', 'Café Latte', 'Hot Chocolate', 'Tea'] },
-                        { name: 'Cocktails', items: ['Long Island — ₦14,000', 'Mojito — ₦9,000', 'Piña Colada — ₦10,000', 'Strawberry Daiquiri — ₦10,000', 'Tequila Sunrise — ₦9,000', 'Margarita — ₦10,000', 'Cosmopolitan — ₦10,000'] }
+                        { name: 'Refreshments & Coffee', items: [
+                            { name: 'Fresh Citrus Juice', price: null }, { name: 'Fresh Fruit Smoothie', price: null }, { name: 'Milkshake', price: null },
+                            { name: 'Iced Coffee', price: null }, { name: 'Cappuccino', price: null }, { name: 'Café Latte', price: null },
+                            { name: 'Hot Chocolate', price: null }, { name: 'Tea', price: null }
+                        ]},
+                        { name: 'Cocktails', items: [
+                            { name: 'Long Island', price: 14000 }, { name: 'Mojito', price: 9000 }, { name: 'Piña Colada', price: 10000 },
+                            { name: 'Strawberry Daiquiri', price: 10000 }, { name: 'Tequila Sunrise', price: 9000 },
+                            { name: 'Margarita', price: 10000 }, { name: 'Cosmopolitan', price: 10000 }
+                        ]}
                     ]
                 }
             }
@@ -928,6 +959,17 @@
             </div>`;
         }
 
+        function drinkRowHTML(item) {
+            const orderable = item.price !== null && item.price !== undefined;
+            return `<li>
+                <span class="d-name">${esc(item.name)}</span>
+                <span class="d-right">
+                    <span class="d-price ${orderable ? '' : 'ask'}">${orderable ? naira(item.price) : 'Ask staff'}</span>
+                    ${orderable ? `<button class="drink-add" aria-label="Add ${esc(item.name)} to order" onclick="addToCart('${esc(item.name)}', ${item.price}, event)">+</button>` : ''}
+                </span>
+            </li>`;
+        }
+
         function renderMenu() {
             const course = MENU[currentCourse];
             const nav = document.getElementById('section-nav-inner');
@@ -974,10 +1016,10 @@
                     ${d.groups.map(g => `
                         <div class="drink-group">
                             <h4>${esc(g.name)}</h4>
-                            <ul>${g.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>
+                            <ul>${g.items.map(drinkRowHTML).join('')}</ul>
                         </div>`).join('')}
                 </div>
-                <div class="drinks-note">Drinks are served fresh to order. Ask our team for today's prices and seasonal specials — or add them to your order when you message us on WhatsApp.</div>
+                <div class="drinks-note">Drinks are served fresh to order. Items marked "Ask staff" don't have a listed price yet — message us on WhatsApp and we'll confirm it for you.</div>
             </section>`;
 
             content.innerHTML = html;
@@ -1010,7 +1052,7 @@
             const allBreakfast = MENU.breakfast.sections.flatMap(s => allItems(s));
             const picks = HOME_FEATURED
                 .map(name => allBreakfast.find(i => i.name === name))
-                .filter(Boolean);
+                .filter(i => i && i.img); // itemCardHTML requires a photo — skip any pick that doesn't have one
             document.getElementById('featured-grid').innerHTML = picks.map(itemCardHTML).join('');
             balanceFeatured();
         }
@@ -1290,93 +1332,58 @@
         }
 
         /* =========================================================
-           PAYMENT FLOW
+           CHECKOUT FLOW — order first, payment details follow on WhatsApp
            ========================================================= */
-        function openPayment() {
+        function openCheckout() {
             if (!cart.length) return;
-            renderPaymentStep();
+            renderCheckoutStep();
             document.getElementById('pay-overlay').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
-        function closePayment() {
+        function closeCheckout() {
             document.getElementById('pay-overlay').classList.remove('active');
             document.body.style.overflow = '';
         }
 
-        function renderPaymentStep() {
+        function renderCheckoutStep() {
             const total = cartTotal();
-            document.getElementById('pay-title').textContent = 'Complete Your Payment';
+            document.getElementById('pay-title').textContent = 'Send Your Order';
             document.getElementById('pay-body').innerHTML = `
-                <p class="pay-intro">Please transfer the exact amount below to any one of our accounts, then tap “I've made payment” to send us your order on WhatsApp.</p>
+                <p class="pay-intro">Review your order below, then send it to us on WhatsApp. Our team will confirm availability and reply with our account details so you can pay.</p>
                 <div class="pay-total-box">
-                    <div class="label">Total To Pay</div>
+                    <div class="label">Order Total</div>
                     <div class="amount">${naira(total)}</div>
                 </div>
-                ${BANKS.map((b, i) => `
-                    <div class="bank-card">
-                        <div class="idx">Account ${i + 1}</div>
-                        <div class="bank-name">${esc(b.bank)}</div>
-                        <div class="field-label">Account Name</div>
-                        <div class="acct-name">${esc(b.name)}</div>
-                        <div class="field-label">Account Number</div>
-                        <div class="acct-num">${esc(b.number)}</div>
-                        <button class="copy-btn" onclick="copyAccount('${b.number}', this)">Copy Account Number</button>
-                    </div>`).join('')}
                 <div class="pay-field">
-                    <label for="pay-bank">Bank you transferred from (optional)</label>
-                    <input id="pay-bank" type="text" placeholder="e.g. GTBank" autocomplete="off">
+                    <label for="pay-note">Delivery address or notes (optional)</label>
+                    <input id="pay-note" type="text" placeholder="e.g. deliver to GRA, or dine-in today" autocomplete="off">
                 </div>
                 <div class="pay-disclaimer">
-                    Tapping “I've made payment” does not verify your transfer. Our team will confirm your payment and check availability on WhatsApp before your order is accepted.
+                    We accept bank transfer to First Bank, Access Bank or UBA. Full account details are sent on WhatsApp once we've confirmed your order.
                 </div>`;
 
             document.getElementById('pay-foot').innerHTML = `
-                <button class="btn-gold" onclick="confirmPayment()">I've Made Payment</button>
-                <button class="btn-text" onclick="closePayment()">Back To Order</button>`;
+                <button class="btn-gold" onclick="sendOrder()">Send Order Via WhatsApp</button>
+                <button class="btn-text" onclick="closeCheckout()">Back To Order</button>`;
         }
 
-        function copyAccount(number, btn) {
-            const done = () => {
-                const original = btn.textContent;
-                btn.textContent = 'Copied ✓';
-                btn.classList.add('copied');
-                setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1800);
-            };
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(number).then(done).catch(() => fallbackCopy(number, done));
-            } else {
-                fallbackCopy(number, done);
-            }
-        }
-
-        function fallbackCopy(text, done) {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.position = 'fixed';
-            ta.style.opacity = '0';
-            document.body.appendChild(ta);
-            ta.select();
-            try { document.execCommand('copy'); done(); } catch (e) {}
-            document.body.removeChild(ta);
-        }
-
-        function buildWhatsAppMessage() {
-            const bankInput = document.getElementById('pay-bank');
-            const fromBank = bankInput && bankInput.value.trim();
+        function buildOrderMessage() {
+            const noteInput = document.getElementById('pay-note');
+            const note = noteInput && noteInput.value.trim();
             let msg = 'Hello Rereandco! I would like to place an order:\n\n';
             cart.forEach(item => {
                 msg += `• ${item.name} × ${item.qty} — ${naira(item.price * item.qty)}\n`;
                 if (item.detail) msg += `   (${item.detail})\n`;
             });
             msg += `\nTotal: ${naira(cartTotal())}\n\n`;
-            msg += `I have made payment by bank transfer${fromBank ? ' from ' + fromBank : ''}.\n`;
-            msg += 'Please confirm my payment and the availability of these items. Thank you!';
+            if (note) msg += `Note: ${note}\n\n`;
+            msg += 'Please confirm availability and send your account details so I can pay. Thank you!';
             return msg;
         }
 
-        function confirmPayment() {
-            const message = buildWhatsAppMessage();
+        function sendOrder() {
+            const message = buildOrderMessage();
             window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
 
             document.getElementById('pay-title').textContent = 'Order Sent';
@@ -1384,18 +1391,18 @@
                 <div class="pay-success">
                     <div class="tick">✓</div>
                     <h3>Thank you!</h3>
-                    <p>Your order details have been sent to our team on WhatsApp. We'll confirm your payment and availability shortly.<br><br>If WhatsApp didn't open, message us on <strong>0916 672 9573</strong>.</p>
+                    <p>Your order has been sent to our team on WhatsApp. We'll confirm availability and reply with our account details so you can complete payment.<br><br>If WhatsApp didn't open, message us on <strong>0916 672 9573</strong>.</p>
                 </div>`;
             document.getElementById('pay-foot').innerHTML = `
                 <button class="btn-gold" onclick="finishOrder()">Start A New Order</button>
-                <button class="btn-text" onclick="closePayment()">Close</button>`;
+                <button class="btn-text" onclick="closeCheckout()">Close</button>`;
         }
 
         function finishOrder() {
             cart = [];
             saveCart();
             updateCartUI();
-            closePayment();
+            closeCheckout();
             document.getElementById('cart-panel').classList.remove('active');
             document.getElementById('cart-overlay').classList.remove('active');
             showToast('Ready for your next order');
@@ -1518,7 +1525,7 @@
 
         document.addEventListener('keydown', e => {
             if (e.key !== 'Escape') return;
-            if (document.getElementById('pay-overlay').classList.contains('active')) closePayment();
+            if (document.getElementById('pay-overlay').classList.contains('active')) closeCheckout();
             else if (document.getElementById('cart-panel').classList.contains('active')) toggleCart();
         });
 
